@@ -1,0 +1,45 @@
+$brand-primary: rgb(0, 139, 184);
+$icon-font-path: './fonts/';
+$font-family-sans-serif: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$spinkit-size: 16px;
+$spinkit-spinner-color: $brand-primary;
+$spinkit-spinner-margin: 5px auto;
+
+@import 'bootstrap';
+@import 'spinners/9-cube-grid';
+@import 'spinners/11-folding-cube';
+@import 'vex';
+@import 'vex-theme-os';
+
+body {
+  padding-top: 60px;
+}
+
+.navbar-brand {
+  padding: 0 15px;
+}
+
+.glyphicon {
+  color: $brand-primary;
+}
+
+.navbar-header img {
+  width: 60px;
+  height: auto;
+}
+
+@keyframes fade-in {
+  0% {
+      opacity: 0;
+  }
+  50% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fade-in 1s;
+}

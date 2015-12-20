@@ -1,0 +1,5 @@
+{
+  "parser": "babel-eslint",
+  "extends": "atom-build",
+  "plugins": [ "react" ]
+}
