@@ -17,4 +17,12 @@ const handle = Promise.promisifyAll(new Docker({
 const getContainer = (id) => Promise.promisifyAll(handle.getContainer(id));
 const listContainers = (...args) => handle.listContainersAsync(...args);
 
-export { getContainer, listContainers };
+const listImages = (...args) => handle.listImagesAsync(...args);
+const getImage = (id) => Promise.promisifyAll(handle.getImage(id));
+
+export {
+  getContainer,
+  listContainers,
+  listImages,
+  getImage
+};

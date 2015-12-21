@@ -1,0 +1,5 @@
+{ num, plural,
+  =0 {No images}
+  =1 {1 image}
+  other {# images}
+}

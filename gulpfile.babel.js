@@ -16,12 +16,16 @@ const javascriptFiles = [
   'src/**/*.jsx'
 ];
 
+const icuFiles = [
+  'src/localization/strings/*.icu'
+];
+
 const htmlFiles = [
   'src/**/*.html'
 ];
 
 const imageFiles = [
-  'src/images/*.png'
+  'src/assets/images/*.png'
 ];
 
 gulp.task('css', () => {
@@ -58,7 +62,7 @@ gulp.task('html', () => {
 
 gulp.task('images', () => {
   return gulp.src(imageFiles)
-    .pipe(gulp.dest('dist/images/'));
+    .pipe(gulp.dest('dist/assets/images/'));
 });
 
 gulp.task('fonts', () => {
@@ -66,7 +70,12 @@ gulp.task('fonts', () => {
     .pipe(gulp.dest('dist/fonts/'));
 });
 
-gulp.task('build', [ 'css', 'javascript', 'html', 'images', 'fonts' ]);
+gulp.task('icu', () => {
+  return gulp.src(icuFiles)
+    .pipe(gulp.dest('dist/localization/strings/'));
+});
+
+gulp.task('build', [ 'css', 'javascript', 'html', 'images', 'fonts', 'icu' ]);
 
 gulp.task('clean', () => {
   return del('dist/');

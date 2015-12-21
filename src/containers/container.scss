@@ -1,23 +1,11 @@
 @import 'bootstrap/variables';
 
 #containers {
-  .docker-container {
-    border: solid 1px $gray-light;
-    border-radius: 5px;
-    background-color: $gray-lighter;
-    margin-bottom: 10px;
-  }
-
   .btn-group {
     display: flex;
   }
 
-  td {
-    min-width: 40px;
-    max-width: 200px;
-
-    &:first-child {
-      white-space: nowrap;
-    }
+  .btn-group:not(:first-child) {
+    margin-top: -1px;
   }
 }

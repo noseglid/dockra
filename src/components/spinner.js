@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 const CubeGrid = React.createClass({
   render() {
-    const cl = classNames('sk-cube-grid', {
+    const cl = classNames('spinner', 'sk-cube-grid', {
       'fade-in': this.props.fadeIn
     });
     return (
@@ -24,7 +24,7 @@ const CubeGrid = React.createClass({
 
 const FoldingCube = React.createClass({
   render() {
-    const cl = classNames('sk-folding-cube', {
+    const cl = classNames('spinner', 'sk-folding-cube', {
       'fade-in': this.props.fadeIn
     });
     return (

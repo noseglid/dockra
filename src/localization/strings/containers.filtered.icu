@@ -1,0 +1,5 @@
+{ num, plural,
+  =0 {No containers}
+  =1 {1 container}
+  other {# containers}
+}

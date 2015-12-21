@@ -2,10 +2,13 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, Link } from 'react-router';
-import Containers from './containers';
-import Logs from './logs';
+import { Router, Route, Link, IndexRedirect } from 'react-router';
+import { IntlMixin } from 'react-intl';
 import humane from 'humane-js';
+import intlData from './localization/intl-data.js';
+import Containers from './containers/containers';
+import Logs from './logs/logs';
+import Images from './images/images';
 
 humane.error = humane.spawn({
   addnCls: 'humane-jackedup-error',
@@ -15,18 +18,24 @@ humane.error = humane.spawn({
 });
 
 const Main = React.createClass({
+  mixin: [ IntlMixin ],
+
   render() {
+    const isActive = this.props.history.isActive;
+    const links = [ 'containers', 'images' ];
     return (
       <div>
         <nav className="navbar navbar-default navbar-fixed-top">
           <div className="container-fluid">
             <div className="navbar-header navbar-brand">
-              <img alt="Docker" src="images/docker.png" />
+              <img alt="Docker" src="assets/images/docker.png" />
             </div>
             <ul className="nav navbar-nav">
-              <li className="active">
-                <Link to="/containers">Containers</Link>
-              </li>
+              { links.map(link => (
+                <li key={link} className={ isActive(`/${link}`) ? 'active' : 'inactive' }>
+                  <Link to={`/${link}`}>{ link }</Link>
+                </li>
+              )) }
             </ul>
           </div>
         </nav>
@@ -36,11 +45,18 @@ const Main = React.createClass({
   }
 });
 
+function createElement(Component, props) {
+  const newProps = Object.assign({}, props, props.route);
+  return (<Component {...newProps} />);
+}
+
 ReactDOM.render((
-  <Router>
-    <Route path="/" component={Main}>
-      <Route path="containers" component={Containers} />
-      <Route path="logs/:id" component={Logs} />
+  <Router createElement={createElement}>
+    <Route path="/" component={Main} >
+      <IndexRedirect to="/containers" />
+      <Route path="containers" component={Containers} {...intlData} />
+      <Route path="logs/:id" component={Logs} {...intlData} />
+      <Route path="images" component={Images} {...intlData} />
     </Route>
   </Router>
 ), document.getElementById('content'));

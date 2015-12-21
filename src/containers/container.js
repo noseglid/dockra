@@ -4,6 +4,7 @@ import React from 'react';
 import moment from 'moment';
 import ControlButton from './control-button';
 import { CubeGrid } from '../components/spinner';
+import controls from './container-controls.js';
 
 function shortify(hash, len = 12) {
   return hash.substr(0, len);
@@ -18,36 +19,10 @@ function formatNames(names) {
 
 export default React.createClass({
   render() {
-    const control = [
-      {
-        icon: 'play',
-        title: 'Start',
-        action: 'start',
-        onClick: this.props.doAction
-      },
-      {
-        icon: 'stop',
-        title: 'Stop',
-        action: 'stop',
-        onClick: this.props.doAction
-      },
-      {
-        icon: 'repeat',
-        title: 'Restart',
-        action: 'restart',
-        onClick: this.props.doAction
-      },
-      {
-        icon: 'align-left',
-        title: 'Logs',
-        action: 'logs',
-        onClick: this.props.doAction
-      }
-    ];
-
+    const formattedNames = formatNames(this.props.Names);
     return (
       <tr>
-        <td>{ formatNames(this.props.Names) }</td>
+        <td title={formattedNames}>{ formattedNames }</td>
         <td>{ shortify(this.props.Id) }</td>
         <td>{ this.props.Image.split(':')[0] } (<small>{ shortify(this.props.ImageID) }</small>)</td>
         <td>{ this.props.Image.split(':')[1] || '<unkown>'}</td>
@@ -55,9 +30,13 @@ export default React.createClass({
         <td>{ this.props.Status }</td>
         <td>
           <fieldset disabled={this.props.loading}>
-            <div className="btn-group">
-              { control.map(c => <ControlButton key={c.title} containerId={this.props.Id} {...c} />) }
-            </div>
+              {
+                controls(this.props.doAction).map((row, index) => {
+                  return (<div className="btn-group" key={index}>
+                    { row.map(c => <ControlButton key={c.action} containerId={this.props.Id} {...c} />) }
+                  </div>);
+                })
+              }
           </fieldset>
         </td>
         <td>{ this.props.loading ? <CubeGrid fadeIn /> : '' }</td>

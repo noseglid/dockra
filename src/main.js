@@ -11,8 +11,8 @@ app.on('window-all-closed', () => {
 app.on('ready', () => {
   mainWindow = new BrowserWindow({
     title: 'Dockra',
-    width: 1280,
-    height: 720
+    width: 1600,
+    height: 1200
   });
 
   mainWindow.loadURL(`file://${__dirname}/index.html`);

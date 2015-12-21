@@ -1,2 +1,25 @@
+@import '../variables.scss';
+
 #logs {
+  .spinner {
+    position: absolute;
+    bottom: 5px;
+    right: 15px;
+  }
+
+  $pre-extra-top: 100px;
+  pre {
+    -webkit-user-select: text;
+    position: absolute;
+    box-sizing: border-box;
+    left: 15px;
+    top: $body-padding-top + $pre-extra-top;
+    right: 15px;
+    bottom: 30px;
+  }
+
+  pre.no-wrap {
+    word-wrap: normal;
+    word-break: normal;
+  }
 }
