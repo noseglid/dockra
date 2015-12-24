@@ -2,9 +2,9 @@
 
 import React from 'react';
 import moment from 'moment';
-import ControlButton from './control-button';
 import { CubeGrid } from '../components/spinner';
 import controls from './container-controls.js';
+import ControlButtons from '../components/control-buttons';
 
 function shortify(hash, len = 12) {
   return hash.substr(0, len);
@@ -28,17 +28,10 @@ export default React.createClass({
         <td>{ this.props.Image.split(':')[1] || '<unkown>'}</td>
         <td>{ moment.unix(this.props.Created).format('llll') }</td>
         <td>{ this.props.Status }</td>
-        <td>
-          <fieldset disabled={this.props.loading}>
-              {
-                controls(this.props.doAction).map((row, index) => {
-                  return (<div className="btn-group" key={index}>
-                    { row.map(c => <ControlButton key={c.action} containerId={this.props.Id} {...c} />) }
-                  </div>);
-                })
-              }
-          </fieldset>
-        </td>
+        <td><ControlButtons buttons={controls}
+                            callback={ this.props.doAction }
+                            callbackArgs={ this.props.Id }
+                            disabled={ this.props.loading } /></td>
         <td>{ this.props.loading ? <CubeGrid fadeIn /> : '' }</td>
       </tr>
     );

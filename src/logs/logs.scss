@@ -9,6 +9,8 @@
 
   $pre-extra-top: 100px;
   pre {
+    background-color: #000;
+    color: lighten(#040, 20%);
     -webkit-user-select: text;
     position: absolute;
     box-sizing: border-box;

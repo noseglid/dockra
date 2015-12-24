@@ -27,7 +27,7 @@ export default React.createClass({
     this.getContainers();
   },
 
-  doAction(containerId, action) {
+  doAction(action, containerId) {
     const container = Promise.promisifyAll(getContainer(containerId));
     let promise;
     switch (action) {

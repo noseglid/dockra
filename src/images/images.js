@@ -18,6 +18,7 @@ export default React.createClass({
   getImages() {
     listImages()
       .map(image => Object.assign({}, image, getImage(image.Id)))
+      .then(images => images.sort((lhs, rhs) => lhs.Id.localeCompare(rhs.Id)))
       .then(images => this.setState({ images: images }))
       .catch(err => {
         console.error(err);
@@ -37,13 +38,31 @@ export default React.createClass({
         image.tag.indexOf(f) !== -1) { // Tag contains filter
       return true;
     }
+
     return false;
+  },
+
+  doAction(action, imageId) {
+    const image = getImage(imageId);
+    let promise;
+    switch (action) {
+      case 'remove':
+        promise = image.removeAsync()
+          .then(() => humane.success(`Image successfully removed.`))
+          .then(() => this.getImages());
+        break;
+    }
+    this.state.images.find(i => i.Id === imageId).loading = true;
+    this.forceUpdate();
+
+    promise.catch(err => humane.error(`Failed to ${action} container: ${err.message}`));
   },
 
   render() {
     const rows = [].concat.apply([], this.state.images.map(image => image.RepoTags.map(repoTag => ({
       repo: repoTag.split(':')[0],
       tag: repoTag.split(':')[1],
+      virtualSize: image.VirtualSize,
       id: image.Id
     }))));
     const filteredImages = rows.filter(this.imageFilter);
@@ -56,12 +75,14 @@ export default React.createClass({
             <tr>
               <th>Repository</th>
               <th>Tags</th>
+              <th>Virtual Size</th>
               <th>Id</th>
+              <th></th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            { filteredImages.map(image => <Image doAction={this.doAction} key={`${image.repo}-${image.tag}`} {...image} />) }
+            { filteredImages.map((image, index) => <Image doAction={this.doAction} key={index} {...image} />) }
           </tbody>
         </table>
       </div>

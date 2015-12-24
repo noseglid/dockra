@@ -17,6 +17,21 @@ humane.error = humane.spawn({
   clickToClose: true
 });
 
+humane.info = humane.spawn({
+  addnCls: 'humane-jackedup-info',
+  timeout: 5000,
+  timeoutAfterMove: 0,
+  clickToClose: true
+});
+
+humane.success = humane.spawn({
+  addnCls: 'humane-jackedup-success',
+  timeout: 5000,
+  timeoutAfterMove: 0,
+  clickToClose: true
+});
+
+
 const Main = React.createClass({
   mixin: [ IntlMixin ],
 
