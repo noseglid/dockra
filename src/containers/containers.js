@@ -18,9 +18,17 @@ export default React.createClass({
 
   getContainers() {
     listContainers({ all: 1 })
-      .map(container => Object.assign({}, container, getContainer(container.Id)))
-      .then(containers => this.setState({ containers: containers }))
-      .catch(err => humane.error(err.message));
+      .then(containers => {
+        Promise.all(containers.map(c => getContainer(c.Id).inspectAsync()))
+          .then(res => containers.map((c, i) => Object.assign({}, res[i], c)))
+          .then(c => {
+            this.setState({ containers: c });
+          });
+      })
+      .catch(err => {
+        console.error(err);
+        humane.error(err.message);
+      });
   },
 
   componentDidMount() {
@@ -28,7 +36,7 @@ export default React.createClass({
   },
 
   doAction(action, containerId) {
-    const container = Promise.promisifyAll(getContainer(containerId));
+    const container = getContainer(containerId);
     let promise;
     switch (action) {
       case 'stop':
@@ -47,7 +55,10 @@ export default React.createClass({
     this.state.containers.find(c => containerId === c.Id).loading = true;
     this.forceUpdate();
 
-    promise.catch(err => humane.error(`Failed to ${action} container: ${err.message}`));
+    promise.catch(err => {
+      console.error(err);
+      humane.error(`Failed to ${action} container: ${err.message}`);
+    });
   },
 
   containerFilter(container) {
@@ -66,7 +77,7 @@ export default React.createClass({
       <div id="containers" className="container">
         <h1>Containers <small><FormattedMessage message={this.getIntlMessage('containers.filtered')} num={filteredContainers.length} /></small></h1>
         <ListFilter freeText={this.linkState('nameFilter')} />
-        <table className="table table-striped filtered">
+        <table className="table filtered">
           <thead>
             <tr>
               <th>Names</th>
@@ -74,7 +85,7 @@ export default React.createClass({
               <th>Image</th>
               <th>Version</th>
               <th>Created</th>
-              <th>Status</th>
+              <th>State</th>
               <th>Control</th>
               <th></th>
             </tr>

@@ -1,5 +1,8 @@
 {
   "parser": "babel-eslint",
   "extends": "atom-build",
-  "plugins": [ "react" ]
+  "plugins": [ "react" ],
+  "rules": {
+    "no-console": 0
+  }
 }

@@ -14,9 +14,10 @@ export default React.createClass({
     return {
       images: [],
       layers: {},
-      nameFilter: 'alpine',
-      repo: 'alpine',
-      tag: 'latest'
+      nameFilter: '',
+      repo: '',
+      tag: '',
+      pulling: false
     };
   },
 
@@ -33,6 +34,7 @@ export default React.createClass({
 
   pull() {
     const t = `${this.state.repo}:${this.state.tag || 'latest'}`;
+    this.setState({ pulling: true });
     pull(t)
       .then((stream) => {
         return new Promise((resolve, reject) => {
@@ -84,7 +86,7 @@ export default React.createClass({
       })
       .then(() => {
         this.getImages();
-        this.setState({ layers: {} });
+        this.setState({ layers: {}, pulling: false });
       })
       .catch(err => {
         console.error(err);
@@ -134,7 +136,7 @@ export default React.createClass({
     const filteredImages = rows.filter(this.imageFilter);
     return (
       <div id="images" className="container">
-        <PullControls tag={this.linkState('tag')} repo={this.linkState('repo')} onClick={this.pull} layers={this.state.layers} />
+        <PullControls pulling={this.state.pulling} tag={this.linkState('tag')} repo={this.linkState('repo')} onClick={this.pull} layers={this.state.layers} />
         <h1>Images <small><FormattedMessage message={this.getIntlMessage('images.filtered')} num={filteredImages.length} /></small></h1>
         <ListFilter freeText={this.linkState('nameFilter')} />
         <table className="table table-striped filtered">

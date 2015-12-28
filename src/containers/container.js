@@ -2,6 +2,7 @@
 
 import React from 'react';
 import moment from 'moment';
+import classNames from 'classnames';
 import { CubeGrid } from '../components/spinner';
 import controls from './container-controls.js';
 import ControlButtons from '../components/control-buttons';
@@ -20,14 +21,19 @@ function formatNames(names) {
 export default React.createClass({
   render() {
     const formattedNames = formatNames(this.props.Names);
+    const rowClassNames = classNames({
+      success: this.props.State.Running,
+      danger: !this.props.State.Running
+    });
+    console.log(rowClassNames);
     return (
-      <tr>
+      <tr className={rowClassNames}>
         <td title={formattedNames}>{ formattedNames }</td>
         <td>{ shortify(this.props.Id) }</td>
         <td>{ this.props.Image.split(':')[0] } (<small>{ shortify(this.props.ImageID) }</small>)</td>
         <td>{ this.props.Image.split(':')[1] || '<unkown>'}</td>
         <td>{ moment.unix(this.props.Created).format('llll') }</td>
-        <td>{ this.props.Status }</td>
+        <td>{ this.props.State.Running ? 'Up' : 'Down' }</td>
         <td><ControlButtons buttons={controls}
                             callback={ this.props.doAction }
                             callbackArgs={ this.props.Id }
