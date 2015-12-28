@@ -38,6 +38,7 @@ table.filtered {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 40px;
+    height: 40px;
     &:first-child {
       white-space: nowrap;
     }

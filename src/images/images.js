@@ -3,15 +3,20 @@ import LinkedStateMixin from 'react-addons-linked-state-mixin';
 import humane from 'humane-js';
 import ListFilter from '../components/list-filter';
 import Image from './image';
+import PullControls from './pull-controls';
 import { IntlMixin, FormattedMessage } from 'react-intl';
-import { listImages, getImage } from '../lib/docker';
+import { listImages, getImage, pull } from '../lib/docker';
 
 export default React.createClass({
   mixins: [ IntlMixin, LinkedStateMixin ],
 
   getInitialState() {
     return {
-      images: []
+      images: [],
+      layers: {},
+      nameFilter: 'alpine',
+      repo: 'alpine',
+      tag: 'latest'
     };
   },
 
@@ -23,6 +28,67 @@ export default React.createClass({
       .catch(err => {
         console.error(err);
         humane.error(err.message);
+      });
+  },
+
+  pull() {
+    const t = `${this.state.repo}:${this.state.tag || 'latest'}`;
+    pull(t)
+      .then((stream) => {
+        return new Promise((resolve, reject) => {
+          stream.on('data', buf => {
+            const ev = JSON.parse(buf.toString('utf8'));
+            if (ev.error) {
+              stream.removeAllListeners();
+              reject(new Error(ev.error));
+              return;
+            }
+
+            if (!ev.progressDetail) {
+              /* not layer progress event */
+              return;
+            }
+
+            const layers = this.state.layers;
+            if (ev.id in layers) {
+              /* existing layer, update values */
+              layers[ev.id].ev = ev;
+              const now = new Date();
+              if (ev.progressDetail.current && ev.progressDetail.total &&
+                1000 < now - layers[ev.id].speed.lastUpdate) {
+                const byteDiff = (ev.progressDetail.current - layers[ev.id].speed.lastBytes);
+                const timeDiff = now - layers[ev.id].speed.lastUpdate;
+                layers[ev.id].speed = {
+                  bytesPerSecond: 1000 * Math.round(byteDiff / timeDiff),
+                  lastUpdate: now,
+                  lastBytes: ev.progressDetail.current
+                };
+              }
+            } else {
+              /* new layer, initialize */
+              layers[ev.id] = {
+                ev: ev,
+                speed: {
+                  lastUpdate: new Date(),
+                  lastBytes: 0,
+                  bytesPerSecond: 0
+                }
+              };
+            }
+
+            this.setState({ layers: layers });
+          });
+          stream.on('end', resolve);
+          stream.on('error', reject);
+        });
+      })
+      .then(() => {
+        this.getImages();
+        this.setState({ layers: {} });
+      })
+      .catch(err => {
+        console.error(err);
+        humane.error(`Failed to pull ${t}: ${err.message}`);
       });
   },
 
@@ -48,14 +114,13 @@ export default React.createClass({
     switch (action) {
       case 'remove':
         promise = image.removeAsync()
-          .then(() => humane.success(`Image successfully removed.`))
-          .then(() => this.getImages());
+          .finally(() => this.getImages());
         break;
     }
     this.state.images.find(i => i.Id === imageId).loading = true;
     this.forceUpdate();
 
-    promise.catch(err => humane.error(`Failed to ${action} container: ${err.message}`));
+    promise.catch(err => humane.error(`Failed to ${action}: ${err.message}`));
   },
 
   render() {
@@ -63,11 +128,13 @@ export default React.createClass({
       repo: repoTag.split(':')[0],
       tag: repoTag.split(':')[1],
       virtualSize: image.VirtualSize,
+      loading: image.loading,
       id: image.Id
     }))));
     const filteredImages = rows.filter(this.imageFilter);
     return (
       <div id="images" className="container">
+        <PullControls tag={this.linkState('tag')} repo={this.linkState('repo')} onClick={this.pull} layers={this.state.layers} />
         <h1>Images <small><FormattedMessage message={this.getIntlMessage('images.filtered')} num={filteredImages.length} /></small></h1>
         <ListFilter freeText={this.linkState('nameFilter')} />
         <table className="table table-striped filtered">

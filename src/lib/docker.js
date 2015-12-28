@@ -20,9 +20,12 @@ const listContainers = (...args) => handle.listContainersAsync(...args);
 const listImages = (...args) => handle.listImagesAsync(...args);
 const getImage = (id) => Promise.promisifyAll(handle.getImage(id));
 
+const pull = (repo) => handle.pullAsync(repo);
+
 export {
   getContainer,
   listContainers,
   listImages,
-  getImage
+  getImage,
+  pull
 };
