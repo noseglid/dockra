@@ -25,7 +25,8 @@ export default React.createClass({
             <div className="row" key={key}>
               <div className="col-sm-2">{layer.ev.status}</div>
               <div className="col-sm-2">{layer.speed.bytesPerSecond ? `${filesize(layer.speed.bytesPerSecond)} / s` : '-'}</div>
-              <div className="col-sm-8">
+              <div className="col-sm-2">{percent}%</div>
+              <div className="col-sm-6">
                 <div className="progress">
                   <div className={cl}
                        aria-valuenow={percent}

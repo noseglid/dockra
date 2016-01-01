@@ -1,5 +1,7 @@
-@import './variables.scss';
+@import 'variables';
+@import 'table';
 @import 'bootstrap';
+@import 'font-awesome';
 @import 'spinners/9-cube-grid';
 @import 'spinners/11-folding-cube';
 
@@ -12,7 +14,7 @@ body {
   padding: 0 15px;
 }
 
-.glyphicon {
+.glyphicon, .fa {
   color: $brand-primary;
 }
 
@@ -31,23 +33,6 @@ ul.nav {
   cursor: default;
 }
 
-table.filtered {
-  table-layout: fixed;
-
-  td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 40px;
-    height: 40px;
-    &:first-child {
-      white-space: nowrap;
-    }
-  }
-  td:last-child, th:last-child {
-    width: 30px;
-  }
-}
-
 @keyframes fade-in {
   0% {
       opacity: 0;
@@ -62,4 +47,8 @@ table.filtered {
 
 .fade-in {
   animation: fade-in 1s;
+}
+
+nav li {
+  transition: background-color 1s ease-in;
 }

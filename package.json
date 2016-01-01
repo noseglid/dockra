@@ -46,6 +46,7 @@
     "classnames": "^2.2.1",
     "dockerode": "^2.2.7",
     "filesize": "^3.1.5",
+    "font-awesome": "^4.5.0",
     "history": "1.13.1",
     "humane-js": "^3.2.2",
     "jquery": "^2.1.4",

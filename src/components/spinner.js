@@ -6,8 +6,12 @@ const CubeGrid = React.createClass({
     const cl = classNames('spinner', 'sk-cube-grid', {
       'fade-in': this.props.fadeIn
     });
+    const style = {
+      width: `${this.props.size}` || 'auto',
+      height: `${this.props.size}` || 'auto'
+    };
     return (
-      <div className={cl}>
+      <div className={cl} style={style}>
         <div className="sk-cube sk-cube1"></div>
         <div className="sk-cube sk-cube2"></div>
         <div className="sk-cube sk-cube3"></div>
@@ -27,8 +31,12 @@ const FoldingCube = React.createClass({
     const cl = classNames('spinner', 'sk-folding-cube', {
       'fade-in': this.props.fadeIn
     });
+    const style = {
+      width: `${this.props.size}` || 'auto',
+      height: `${this.props.size}` || 'auto'
+    };
     return (
-      <div className={cl}>
+      <div className={cl} style={style}>
         <div className="sk-cube1 sk-cube"></div>
         <div className="sk-cube2 sk-cube"></div>
         <div className="sk-cube4 sk-cube"></div>

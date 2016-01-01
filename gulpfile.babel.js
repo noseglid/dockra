@@ -28,6 +28,11 @@ const imageFiles = [
   'src/assets/images/*.png'
 ];
 
+const fontFiles = [
+  'node_modules/bootstrap-sass/assets/fonts/bootstrap/*',
+  'node_modules/font-awesome/fonts/*'
+];
+
 gulp.task('css', () => {
   return gulp.src(cssFiles)
     .pipe($.plumber())
@@ -36,7 +41,8 @@ gulp.task('css', () => {
       includePaths: [
         'node_modules/bootstrap-sass/assets/stylesheets/',
         'node_modules/spinkit/scss/',
-        'node_modules/vex-js/sass/'
+        'node_modules/vex-js/sass/',
+        'node_modules/font-awesome/scss/'
       ]
     }).on('error', $.sass.logError))
     .pipe($.concat('main.css'))
@@ -66,8 +72,8 @@ gulp.task('images', () => {
 });
 
 gulp.task('fonts', () => {
-  return gulp.src('node_modules/bootstrap-sass/assets/fonts/bootstrap/*')
-    .pipe(gulp.dest('dist/fonts/'));
+  return gulp.src(fontFiles)
+    .pipe(gulp.dest('dist/assets/fonts/'));
 });
 
 gulp.task('icu', () => {

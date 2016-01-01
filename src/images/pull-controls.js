@@ -1,6 +1,6 @@
 import React from 'react';
 import PullStatus from './pull-status';
-import { FoldingCube } from '../components/spinner';
+import { CubeGrid as Spinner } from '../components/spinner';
 
 export default React.createClass({
   render() {
@@ -17,7 +17,7 @@ export default React.createClass({
             <span className="input-group-btn">
               <button className="btn btn-primary form-control" disabled={this.props.pulling} type="button" onClick={this.props.onClick}>Pull image</button>
             </span>
-            { this.props.pulling ? <FoldingCube fadeIn /> : '' }
+            { this.props.pulling ? <Spinner size="32px" fadeIn /> : '' }
           </div>
         </form>
 
