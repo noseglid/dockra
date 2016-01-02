@@ -15,7 +15,7 @@ export default React.createClass({
               <input className="form-control" disabled={this.props.pulling} placeholder="Tag (default: latest)" type="text" valueLink={this.props.tag} />
             </span>
             <span className="input-group-btn">
-              <button className="btn btn-primary form-control" disabled={this.props.pulling} type="button" onClick={this.props.onClick}>Pull image</button>
+              <button className="btn btn-primary form-control" disabled={this.props.pulling || this.props.repo.value.length === 0} type="button" onClick={this.props.onClick}>Pull image</button>
             </span>
             { this.props.pulling ? <Spinner size="32px" fadeIn /> : '' }
           </div>

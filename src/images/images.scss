@@ -1,3 +1,7 @@
 .input-group-btn > .form-control {
   margin-left: -1px;
 }
+
+.btn-primary[disabled] {
+  color: #000;
+}

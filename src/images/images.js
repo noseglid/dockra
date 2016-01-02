@@ -84,13 +84,13 @@ export default React.createClass({
           stream.on('error', reject);
         });
       })
-      .then(() => {
-        this.getImages();
-        this.setState({ layers: {}, pulling: false });
-      })
       .catch(err => {
         console.error(err);
         humane.error(`Failed to pull ${t}: ${err.message}`);
+      })
+      .finally(() => {
+        this.getImages();
+        this.setState({ layers: {}, pulling: false });
       });
   },
 
