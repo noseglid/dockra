@@ -14,6 +14,7 @@ const handle = Promise.promisifyAll(new Docker({
   key: readFileSync(certpath + '/key.pem')
 }));
 
+const createContainer = (...args) => handle.createContainerAsync(...args);
 const getContainer = (id) => Promise.promisifyAll(handle.getContainer(id));
 const listContainers = (...args) => handle.listContainersAsync(...args);
 
@@ -22,10 +23,11 @@ const getImage = (id) => Promise.promisifyAll(handle.getImage(id));
 
 const pull = (repo) => handle.pullAsync(repo);
 
-export {
-  getContainer,
-  listContainers,
-  listImages,
-  getImage,
-  pull
+export default {
+  createContainer: createContainer,
+  getContainer: getContainer,
+  listContainers: listContainers,
+  listImages: listImages,
+  getImage: getImage,
+  pull: pull
 };

@@ -7,6 +7,7 @@ import { IntlMixin } from 'react-intl';
 import humane from 'humane-js';
 import intlData from './localization/intl-data.js';
 import Containers from './containers/containers';
+import CreateContainer from './containers/create/create';
 import Logs from './logs/logs';
 import Images from './images/images';
 
@@ -70,6 +71,7 @@ ReactDOM.render((
     <Route path="/" component={Main} >
       <IndexRedirect to="/containers" />
       <Route path="containers" component={Containers} {...intlData} />
+      <Route path="containers/create/:imageId" component={CreateContainer} {...intlData} />
       <Route path="logs/:id" component={Logs} {...intlData} />
       <Route path="images" component={Images} {...intlData} />
     </Route>

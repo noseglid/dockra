@@ -3,11 +3,8 @@ const formatters = {
     return hashString.substr(0, len);
   },
 
-  containerNames(names) {
-    return names
-      .map(n => n.substr(1))
-      .filter(n => (n.match(/\//) || []).length === 0)
-      .join(', ');
+  containerName(name) {
+    return name.match(/^\//) ? name.substr(1) : name;
   }
 };
 

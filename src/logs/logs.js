@@ -1,7 +1,7 @@
 import React from 'react';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
-import { getContainer } from '../lib/docker';
+import docker from '../lib/docker';
 import { FoldingCube } from '../components/spinner';
 import OutputBox from './output-box';
 
@@ -18,7 +18,7 @@ export default React.createClass({
   },
 
   componentWillMount() {
-    const container = getContainer(this.props.params.id);
+    const container = docker.getContainer(this.props.params.id);
 
     container.inspectAsync((err, data) => {
       this.setState({ running: !err && data.State.Running });

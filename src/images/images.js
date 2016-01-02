@@ -5,7 +5,7 @@ import ListFilter from '../components/list-filter';
 import Image from './image';
 import PullControls from './pull-controls';
 import { IntlMixin, FormattedMessage } from 'react-intl';
-import { listImages, getImage, pull } from '../lib/docker';
+import docker from '../lib/docker';
 
 export default React.createClass({
   mixins: [ IntlMixin, LinkedStateMixin ],
@@ -22,8 +22,8 @@ export default React.createClass({
   },
 
   getImages() {
-    listImages()
-      .map(image => Object.assign({}, image, getImage(image.Id)))
+    return docker.listImages()
+      .map(image => Object.assign({}, image, docker.getImage(image.Id)))
       .then(images => images.sort((lhs, rhs) => lhs.Id.localeCompare(rhs.Id)))
       .then(images => this.setState({ images: images }))
       .catch(err => {
@@ -35,7 +35,7 @@ export default React.createClass({
   pull() {
     const t = `${this.state.repo}:${this.state.tag || 'latest'}`;
     this.setState({ pulling: true });
-    pull(t)
+    docker.pull(t)
       .then((stream) => {
         return new Promise((resolve, reject) => {
           stream.on('data', buf => {
@@ -111,13 +111,16 @@ export default React.createClass({
   },
 
   doAction(action, imageId) {
-    const image = getImage(imageId);
+    const image = docker.getImage(imageId);
     let promise;
     switch (action) {
       case 'remove':
         promise = image.removeAsync()
           .finally(() => this.getImages());
         break;
+
+      case 'create':
+        return this.props.history.push(`/containers/create/${imageId}`);
     }
     this.state.images.find(i => i.Id === imageId).loading = true;
     this.forceUpdate();

@@ -6,7 +6,7 @@ import humane from 'humane-js';
 import classNames from 'classnames';
 import ListFilter from '../components/list-filter';
 import Container from './container';
-import { listContainers, getContainer } from '../lib/docker';
+import docker from '../lib/docker';
 import format from '../lib/format';
 
 function genericCompare(lhs, rhs, dir) {
@@ -31,8 +31,8 @@ export default React.createClass({
     const sort = this.state.sort;
     switch (sort.column) {
       case 'names':
-        const n1 = format.containerNames(lhs.Names).toLowerCase();
-        const n2 = format.containerNames(rhs.Names).toLowerCase();
+        const n1 = format.containerName(lhs.Name).toLowerCase();
+        const n2 = format.containerName(rhs.Name).toLowerCase();
         return genericCompare(n1, n2, sort.direction);
       case 'id':
         return genericCompare(lhs.Id, rhs.Id, sort.direction);
@@ -55,9 +55,9 @@ export default React.createClass({
   },
 
   getContainers() {
-    listContainers({ all: 1 })
+    docker.listContainers({ all: 1 })
       .then(containers => {
-        Promise.all(containers.map(c => getContainer(c.Id).inspectAsync()))
+        Promise.all(containers.map(c => docker.getContainer(c.Id).inspectAsync()))
           .then(res => containers.map((c, i) => Object.assign({}, res[i], c)))
           .then(c => this.setState({ containers: c }));
       })
@@ -72,7 +72,7 @@ export default React.createClass({
   },
 
   doAction(action, containerId) {
-    const container = getContainer(containerId);
+    const container = docker.getContainer(containerId);
     let promise;
     switch (action) {
       case 'stop':
@@ -103,7 +103,7 @@ export default React.createClass({
       return true;
     }
 
-    if (format.containerNames(container.Names).indexOf(f) !== -1) {
+    if (format.containerName(container.Name).indexOf(f) !== -1) {
       return true;
     }
 
