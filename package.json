@@ -53,6 +53,7 @@
     "moment": "^2.10.6",
     "react": "^0.14.3",
     "react-addons-linked-state-mixin": "^0.14.3",
+    "react-addons-update": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-intl": "1.2.0",
     "react-nest-link-state": "^0.2.0",
