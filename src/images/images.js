@@ -4,6 +4,7 @@ import humane from 'humane-js';
 import ListFilter from '../components/list-filter';
 import Image from './image';
 import PullControls from './pull-controls';
+import PullStatus from './pull-status';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import docker from '../lib/docker';
 
@@ -139,7 +140,9 @@ export default React.createClass({
     const filteredImages = rows.filter(this.imageFilter);
     return (
       <div id="images" className="container">
-        <PullControls pulling={this.state.pulling} tag={this.linkState('tag')} repo={this.linkState('repo')} onClick={this.pull} layers={this.state.layers} />
+        <PullControls pulling={this.state.pulling} tag={this.linkState('tag')} repo={this.linkState('repo')} onClick={this.pull} />
+        <PullStatus layers={this.state.layers} />
+
         <h1>Images <small><FormattedMessage message={this.getIntlMessage('images.filtered')} num={filteredImages.length} /></small></h1>
         <ListFilter freeText={this.linkState('nameFilter')} />
         <table className="table table-striped filtered">
