@@ -116,7 +116,7 @@ export default React.createClass({
     let promise;
     switch (action) {
       case 'remove':
-        promise = image.removeAsync()
+        promise = image.removeAsync({ force: true })
           .finally(() => this.getImages());
         break;
 
