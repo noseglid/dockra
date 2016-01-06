@@ -5,10 +5,17 @@ import DockerRegistry from '../lib/docker-registry';
 
 export default React.createClass({
 
-  getInitialState() {
-    return {
-      tags: []
-    };
+  fetchRepos(query) {
+    if (!query && !this.props.repo.value) {
+      return Promise.resolve();
+    } else if (!query) {
+      return Promise.resolve({ options: [ { value: this.props.repo.value, label: this.props.repo.value } ] });
+    }
+
+    return DockerRegistry.searchRepo(query)
+      .then(r => r.results.map(repo => ({ value: repo.name, label: repo.name })))
+      .then(repos => ({ options: repos }))
+      .catch(err => {/* Ignore this, no repos found. Showing an empty list is the best course of action here */ });
   },
 
   fetchTags() {
@@ -22,9 +29,9 @@ export default React.createClass({
       .catch(err => {/* Ignore this, no tags found. Showing an empty list is the best course of action here */ });
   },
 
-  repoChanged(ev) {
+  repoChanged(repo) {
+    this.props.repo.requestChange(repo ? repo.value : '');
     this.props.tag.requestChange('');
-    this.props.repo.requestChange(ev.target.value);
   },
 
   tagChanged(tag) {
@@ -35,13 +42,13 @@ export default React.createClass({
     return (
       <div className="row">
         <div className="col-md-4">
-          <input
+          <Select.Async
+            key={Math.random().toString()}
             value={this.props.repo.value}
             onChange={this.repoChanged}
-            className="form-control"
             disabled={this.props.pulling}
-            placeholder="Repository"
-            type="text"
+            loadOptions={this.fetchRepos}
+            placeholder="Repository..."
             />
         </div>
         <div className="col-md-4">
@@ -51,16 +58,15 @@ export default React.createClass({
             disabled={this.props.pulling}
             onChange={this.tagChanged}
             loadOptions={this.fetchTags}
-            placeholder="Select tag..." />
+            placeholder="Select tag..."
+            />
         </div>
         <div className="col-md-2">
           <button
             className="btn btn-primary form-control"
             disabled={this.props.pulling || !this.props.repo.value || !this.props.tag.value}
             type="button"
-            onClick={this.props.onClick}>
-              Pull image
-          </button>
+            onClick={this.props.onClick}>Pull image</button>
         </div>
         <div className="col-md-2">
           { this.props.pulling ? <Spinner size="28px" fadeIn /> : '' }
