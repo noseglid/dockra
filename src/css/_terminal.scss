@@ -1,0 +1,19 @@
+@import 'variables';
+
+.terminal {
+  -webkit-user-select: text;
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  float: none;
+  font-size: 12px;
+  position: absolute;
+  box-sizing: border-box;
+  left: 15px;
+  top: $body-padding-top + 100px;
+  right: 15px;
+  bottom: 30px;
+}
+
+.terminal-cursor {
+  color: #ffffff;
+  background: #f0f0f0;
+}
