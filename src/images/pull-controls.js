@@ -13,7 +13,10 @@ export default React.createClass({
     }
 
     return DockerRegistry.searchRepo(query)
-      .then(r => r.results.map(repo => ({ value: repo.name, label: repo.name })))
+      .then(r => r.results
+        .sort((lhs, rhs) => rhs.star_count - lhs.star_count)
+        .map(repo => ({ value: repo.name, label: `${repo.name} (\u2605${repo.star_count})` }))
+      )
       .then(repos => ({ options: repos }))
       .catch(err => {/* Ignore this, no repos found. Showing an empty list is the best course of action here */ });
   },

@@ -44,9 +44,13 @@ export default React.createClass({
   },
 
   createContainer() {
-    const createOpts = update(this.state.container, {
-      Cmd: { $set: this.state.container.Cmd.split(' ') }
-    });
+    let createOpts = this.state.container;
+    if (this.state.container.Cmd) {
+      createOpts = update(this.state.container, {
+        Cmd: { $set: this.state.container.Cmd.split(' ') }
+      });
+    }
+
     docker.createContainer(createOpts)
       .then(container => {
         let promise = Promise.resolve();

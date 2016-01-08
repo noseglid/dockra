@@ -79,7 +79,9 @@ export default React.createClass({
               };
             }
 
-            this.setState({ layers: layers });
+            if (this.isMounted()) {
+              this.setState({ layers: layers });
+            }
           });
           stream.on('end', resolve);
           stream.on('error', reject);
@@ -90,8 +92,10 @@ export default React.createClass({
         humane.error(`Failed to pull ${t}: ${err.message}`);
       })
       .finally(() => {
-        this.getImages();
-        this.setState({ layers: {}, pulling: false });
+        if (this.isMounted()) {
+          this.getImages();
+          this.setState({ layers: {}, pulling: false });
+        }
       });
   },
 

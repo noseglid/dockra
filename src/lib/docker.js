@@ -23,11 +23,15 @@ const getImage = (id) => Promise.promisifyAll(handle.getImage(id));
 
 const pull = (repo) => handle.pullAsync(repo);
 
+const exec = (containerId, opts) => getContainer(containerId).execAsync(opts)
+  .then(e => Promise.promisifyAll(e));
+
 export default {
   createContainer: createContainer,
   getContainer: getContainer,
   listContainers: listContainers,
   listImages: listImages,
   getImage: getImage,
-  pull: pull
+  pull: pull,
+  exec: exec
 };

@@ -1,0 +1,20 @@
+#character-width-test {
+  position: absolute;
+  // top: -1000px;
+  // left: -1000px;
+  // visibility: hidden;
+  height: auto;
+  width: auto;
+  white-space: nowrap;
+}
+
+.terminal {
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-size: 12px;
+  -webkit-user-select: text;
+}
+
+.terminal-cursor {
+  color: #ffffff;
+  background: #f0f0f0;
+}

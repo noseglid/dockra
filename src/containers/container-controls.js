@@ -36,6 +36,12 @@ export default function (cb) {
         title: 'Remove',
         action: 'remove',
         onClick: cb
+      },
+      {
+        icon: 'console',
+        title: 'Open console',
+        action: 'console',
+        onClick: cb
       }
     ]
   ];

@@ -67,7 +67,7 @@ export default React.createClass({
       });
   },
 
-  componentDidMount() {
+  componentWillMount() {
     this.getContainers();
   },
 
@@ -83,6 +83,8 @@ export default React.createClass({
         break;
       case 'logs':
         return this.props.history.push(`/logs/${containerId}`);
+      case 'console':
+        return this.props.history.push(`/containers/console/${containerId}`);
       default:
         console.error('Invalid container action:', action);
         return false;
