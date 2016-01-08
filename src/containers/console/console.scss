@@ -1,7 +1,9 @@
 .terminal {
   font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  float: none;
   font-size: 12px;
   -webkit-user-select: text;
+  height: 87vh;
 }
 
 .terminal-cursor {

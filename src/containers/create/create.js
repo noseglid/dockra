@@ -13,7 +13,7 @@ export default React.createClass({
     return {
       container: {
         Env: [],
-        Tty: false,
+        Tty: true,
         Image: this.props.params.imageId
       }
     };

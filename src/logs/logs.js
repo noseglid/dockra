@@ -1,9 +1,10 @@
 import React from 'react';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import $ from 'jquery';
+import Terminal from 'term.js';
 
 import docker from '../lib/docker';
 import { FoldingCube } from '../components/spinner';
-import OutputBox from './output-box';
 
 export default React.createClass({
   mixins: [ LinkedStateMixin ],
@@ -30,15 +31,20 @@ export default React.createClass({
         follow: 1
       };
       return container.logsAsync(opts).then(stream => {
-        this.setState({ stream: stream });
-        let nextLen = -1;
-        stream.on('data', (buf) => {
-          if (nextLen === -1) {
-            return (nextLen = 1);
-          }
-          this.setState({ output: this.state.output + buf.toString('utf8') });
-          nextLen = -1;
+        const geometry = {
+          w: Math.floor($('#console').width() / 7.29), // 7.29 is the width of 12px Menlo font
+          h: 40
+        };
+        const terminal = new Terminal({
+          geometry: [ geometry.w, geometry.h ],
+          screenKeys: true,
+          termName: 'xterm-256color',
+          useStyle: true
         });
+        this.setState({ stream: stream });
+        terminal.open(document.getElementById('console'));
+        stream.setEncoding('utf8');
+        stream.pipe(terminal);
       });
     });
   },
@@ -63,7 +69,7 @@ export default React.createClass({
             </div>
           </div>
         </form>
-        <OutputBox noWrap={!this.state.wrap} output={this.state.output} scroll={this.state.scroll} />
+        <div id="console"></div>
         { this.state.running ? <FoldingCube /> : '' }
       </div>
     );
