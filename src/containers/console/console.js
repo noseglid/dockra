@@ -23,7 +23,6 @@ export default class Console extends React.Component {
       termName: 'xterm-256color',
       useStyle: true
     });
-    console.log(terminal);
     terminal.open(document.getElementById('console'));
 
     const execOpts = {
