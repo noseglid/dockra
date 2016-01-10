@@ -47,6 +47,7 @@ export default class ReactTerminal extends React.Component {
   handleResize() {
     const geometry = this.terminalGeometry();
     this.state.terminal.resize(geometry.w, geometry.h);
+    $('.terminal').css('top', $('.terminal').parent().position().top + 'px');
 
     if (this.props.onResize) {
       this.props.onResize(geometry.w, geometry.h);

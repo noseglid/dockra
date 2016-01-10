@@ -42,10 +42,12 @@ const Main = React.createClass({
     const links = [ 'containers', 'images' ];
     return (
       <div>
-        <nav className="navbar navbar-default navbar-fixed-top">
+        <nav className="navbar navbar-default navbar-static-top">
           <div className="container-fluid">
-            <div className="navbar-header navbar-brand">
-              <img alt="Docker" src="assets/images/docker.png" />
+            <div className="navbar-header">
+              <a className="navbar-brand" href="#">
+                <img alt="Docker" src="assets/images/docker.png" />
+              </a>
             </div>
             <ul className="nav navbar-nav">
               { links.map(link => (
