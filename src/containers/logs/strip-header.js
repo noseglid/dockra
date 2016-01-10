@@ -1,6 +1,6 @@
-import stream from 'stream';
+import { Transform } from 'stream';
 
-export default class StripHeader extends stream.Transform {
+export default class StripHeader extends Transform {
   constructor() {
     super({ objectMode: true });
     this.nextChunkIsHeader = true;

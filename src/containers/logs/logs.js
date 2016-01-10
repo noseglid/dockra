@@ -1,9 +1,9 @@
 import React from 'react';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
-import docker from '../lib/docker';
-import format from '../lib/format';
-import Terminal from '../components/terminal';
+import docker from '../../lib/docker';
+import format from '../../lib/format';
+import Terminal from '../../components/terminal';
 import StripHeader from './strip-header';
 
 export default React.createClass({
@@ -26,7 +26,6 @@ export default React.createClass({
         follow: 1
       };
       return container.logsAsync(opts).then(stream => {
-        stream.on('end', () => console.log('end'));
         let terminalStream = stream;
         if (!data.Config.Tty) {
           /* Each frame is prepended with header if tty is not attached. Strip these. */
@@ -45,7 +44,7 @@ export default React.createClass({
     this.state.terminalStream.removeAllListeners();
     this.state.stream.removeAllListeners();
     this.state.stream.destroy();
-    this.setState({ streamRaw: null, stream: null });
+    this.setState({ stream: null, terminalStream: null });
   },
 
   render() {

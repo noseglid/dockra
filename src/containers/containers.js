@@ -82,9 +82,8 @@ export default React.createClass({
         promise = container[`${action}Async`]().finally(() => this.getContainers());
         break;
       case 'logs':
-        return this.props.history.push(`/logs/${containerId}`);
       case 'console':
-        return this.props.history.push(`/containers/console/${containerId}`);
+        return this.props.history.push(`/containers/${action}/${containerId}`);
       default:
         console.error('Invalid container action:', action);
         return false;

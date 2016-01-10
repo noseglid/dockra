@@ -9,7 +9,7 @@ import intlData from './localization/intl-data.js';
 import Containers from './containers/containers';
 import CreateContainer from './containers/create/create';
 import ConsoleContainer from './containers/console/console';
-import Logs from './logs/logs';
+import LogsContainer from './containers/logs/logs';
 import Images from './images/images';
 
 humane.error = humane.spawn({
@@ -76,7 +76,7 @@ ReactDOM.render((
       <Route path="containers" component={Containers} {...intlData} />
       <Route path="containers/create/:imageId" component={CreateContainer} {...intlData} />
       <Route path="containers/console/:containerId" component={ConsoleContainer} {...intlData} />
-      <Route path="logs/:id" component={Logs} {...intlData} />
+      <Route path="containers/logs/:id" component={LogsContainer} {...intlData} />
       <Route path="images" component={Images} {...intlData} />
     </Route>
   </Router>
