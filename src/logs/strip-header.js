@@ -7,7 +7,6 @@ export default class StripHeader extends stream.Transform {
   }
 
   _transform(chunk, enc, cb) {
-    console.log(enc);
     if (!this.nextChunkIsHeader) {
       this.push(chunk + '\r');
     }
