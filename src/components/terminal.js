@@ -39,7 +39,7 @@ export default class ReactTerminal extends React.Component {
 
   terminalGeometry() {
     return {
-      w: Math.floor($('.terminal').width() / 7.21), // 7.21 is the width of 12px Menlo font
+      w: Math.floor($('.terminal').width() / 7.3), // 7.3 is the width of 12px Menlo (monospace) font
       h: Math.floor($('.terminal').height() / 17) // 17 is the  line height
     };
   }
@@ -47,7 +47,10 @@ export default class ReactTerminal extends React.Component {
   handleResize() {
     const geometry = this.terminalGeometry();
     this.state.terminal.resize(geometry.w, geometry.h);
-    this.props.exec.resizeAsync(geometry);
+
+    if (this.props.onResize) {
+      this.props.onResize(geometry.w, geometry.h);
+    }
   }
 
   render() {
@@ -57,5 +60,6 @@ export default class ReactTerminal extends React.Component {
 
 Terminal.propTypes = {
   stream: React.PropTypes.instanceOf(stream.Readable),
-  twoWay: React.PropTypes.bool
+  twoWay: React.PropTypes.bool,
+  onResize: React.PropTypes.function
 };

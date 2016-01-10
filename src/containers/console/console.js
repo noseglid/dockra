@@ -11,6 +11,8 @@ export default class Console extends React.Component {
       stream: null,
       exec: null
     };
+
+    this.handleResize = this.handleResize.bind(this);
   }
 
   componentWillMount() {
@@ -38,11 +40,13 @@ export default class Console extends React.Component {
       });
   }
 
+  handleResize(w, h) {
+    this.state.exec.resizeAsync({ w: w, h: h });
+  }
+
   render() {
-    let termComponent = null;
-    if (this.state.stream && this.state.exec) {
-      termComponent = <Terminal stream={this.state.stream} exec={this.state.exec} twoWay={true} />;
-    }
+    const termComponent = this.state.stream ?
+      <Terminal stream={this.state.stream} twoWay={true} onResize={this.handleResize} /> : null;
 
     return (
       <div className="container-fluid" id="console">

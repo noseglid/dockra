@@ -44,7 +44,7 @@ export default React.createClass({
   render() {
     return (
       <div className="row">
-        <div className="col-md-4">
+        <div className="col-sm-4">
           <Select.Async
             key={Math.random().toString()}
             value={this.props.repo.value}
@@ -54,7 +54,7 @@ export default React.createClass({
             placeholder="Repository..."
             />
         </div>
-        <div className="col-md-4">
+        <div className="col-sm-4">
           <Select.Async
             key={this.props.repo.value}
             value={this.props.tag.value}
@@ -64,14 +64,14 @@ export default React.createClass({
             placeholder="Select tag..."
             />
         </div>
-        <div className="col-md-2">
+        <div className="col-sm-2">
           <button
             className="btn btn-primary form-control"
             disabled={this.props.pulling || !this.props.repo.value || !this.props.tag.value}
             type="button"
             onClick={this.props.onClick}>Pull image</button>
         </div>
-        <div className="col-md-2">
+        <div className="col-sm-2">
           { this.props.pulling ? <Spinner size="28px" fadeIn /> : '' }
         </div>
       </div>
