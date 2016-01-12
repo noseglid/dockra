@@ -1,7 +1,9 @@
 'use babel';
 
-const gulp = require('gulp');
-const del = require('del');
+import gulp from 'gulp';
+import del from 'del';
+import fs from 'fs';
+import { exec } from 'child_process';
 import gulpLoadPlugins from 'gulp-load-plugins';
 
 const $ = gulpLoadPlugins();
@@ -82,7 +84,64 @@ gulp.task('icu', () => {
     .pipe(gulp.dest('dist/localization/strings/'));
 });
 
+gulp.task('release:dependencies', [ 'release:package.json' ], () => {
+  return new Promise((resolve, reject) => {
+    $.util.log('Will install dependencies. This may take a while...');
+    exec('npm install', { cwd: '.release' }, (err, stdout, stderr) => {
+      if (err) return reject(err);
+      $.util.log('Dependencies successfully installed!');
+      resolve();
+    });
+  });
+});
+
+gulp.task('release:package.json', () => {
+  try { fs.mkdirSync('.release/'); } catch (e) { /* noop */ }
+
+  return new Promise((resolve, reject) => {
+    const pkg = require('./package.json');
+    fs.writeFileSync('.release/package.json', JSON.stringify({
+      name: pkg.name,
+      version: pkg.version,
+      dependencies: pkg.dependencies,
+      main: pkg.main
+    }));
+    resolve();
+  });
+});
+
+gulp.task('release:copy', [ 'build' ], () => {
+  gulp.src([ 'dist/**/*' ])
+    .pipe(gulp.dest('.release/'));
+});
+
+gulp.task('release:osx', [ 'release:copy', 'release:dependencies' ], () => {
+  const packageJson = require('./package.json');
+  return gulp.src('')
+    .pipe($.electron({
+      src: './.release',
+      packageJson: packageJson,
+      release: './release',
+      cache: './cache',
+      version: 'v0.35.5',
+      platforms: [ 'darwin-x64' ],
+      asar: true,
+      platformResources: {
+        darwin: {
+          CFBundleDisplayName: packageJson.name,
+          CFBundleIdentifier: packageJson.name,
+          CFBundleName: packageJson.name,
+          CFBundleVersion: packageJson.version,
+          icon: './resources/osx/icon.icns'
+        }
+      }
+    }))
+    .pipe(gulp.dest(''));
+});
+
 gulp.task('build', [ 'css', 'javascript', 'html', 'images', 'fonts', 'icu' ]);
+
+gulp.task('release', [ 'release:osx' ]);
 
 gulp.task('clean', () => {
   return del('dist/');

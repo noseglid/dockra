@@ -1,5 +1,3 @@
-'use babel';
-
 import { app, BrowserWindow } from 'electron';
 
 let mainWindow;
@@ -16,8 +14,6 @@ app.on('ready', () => {
   });
 
   mainWindow.loadURL(`file://${__dirname}/index.html`);
-
-  mainWindow.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;

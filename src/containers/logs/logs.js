@@ -18,7 +18,7 @@ export default React.createClass({
   componentWillMount() {
     const container = docker.getContainer(this.props.params.id);
 
-    container.inspectAsync((err, data) => {
+    container.inspectAsync().then(data => {
       const opts = {
         stdout: 1,
         stderr: 1,
@@ -37,13 +37,19 @@ export default React.createClass({
           containerName: format.containerName(data.Name)
         });
       });
-    });
+    }).catch(err => console.error(err));
   },
 
   componentWillUnmount() {
-    this.state.terminalStream.removeAllListeners();
-    this.state.stream.removeAllListeners();
-    this.state.stream.destroy();
+    if (this.state.terminalStream) {
+      this.state.terminalStream.removeAllListeners();
+    }
+
+    if (this.state.stream) {
+      this.state.stream.removeAllListeners();
+      this.state.stream.destroy();
+    }
+
     this.setState({ stream: null, terminalStream: null });
   },
 
