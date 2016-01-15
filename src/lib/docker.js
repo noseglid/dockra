@@ -26,6 +26,8 @@ const pull = (repo) => handle.pullAsync(repo);
 const exec = (containerId, opts) => getContainer(containerId).execAsync(opts)
   .then(e => Promise.promisifyAll(e));
 
+const searchImages = (term) => handle.searchImagesAsync({ term: term });
+
 export default {
   createContainer: createContainer,
   getContainer: getContainer,
@@ -33,5 +35,6 @@ export default {
   listImages: listImages,
   getImage: getImage,
   pull: pull,
-  exec: exec
+  exec: exec,
+  searchImages: searchImages
 };

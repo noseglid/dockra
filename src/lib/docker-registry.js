@@ -24,13 +24,5 @@ export default {
       method: 'GET',
       url: `repositories/${repo}/tags`
     });
-  },
-
-  searchRepo(query) {
-    return req({
-      method: 'GET',
-      url: 'search',
-      qs: { q: query }
-    });
   }
 };

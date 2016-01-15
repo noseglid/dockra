@@ -2,6 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 import { CubeGrid as Spinner } from '../components/spinner';
 import DockerRegistry from '../lib/docker-registry';
+import docker from '../lib/docker';
 
 export default React.createClass({
 
@@ -12,8 +13,8 @@ export default React.createClass({
       return Promise.resolve({ options: [ { value: this.props.repo.value, label: this.props.repo.value } ] });
     }
 
-    return DockerRegistry.searchRepo(query)
-      .then(r => r.results
+    return docker.searchImages(query)
+      .then(result => result
         .sort((lhs, rhs) => rhs.star_count - lhs.star_count)
         .map(repo => ({ value: repo.name, label: `${repo.name} (\u2605${repo.star_count})` }))
       )
