@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import { EventEmitter } from 'events';
 import { parse } from 'url';
 import Docker from 'dockerode';
 import Promise from 'bluebird';
@@ -28,6 +29,62 @@ const exec = (containerId, opts) => getContainer(containerId).execAsync(opts)
 
 const searchImages = (term) => handle.searchImagesAsync({ term: term });
 
+const getEvents = () => handle.getEventsAsync().then(stream => {
+  const DockerEvents = class DockerEvents extends EventEmitter {
+    constructor(dockerStream) {
+      super();
+      this.dockerStream = dockerStream;
+      this.dockerStream.on('data', this.handleData);
+    }
+
+    destroy() {
+      this.dockerStream.removeListener('data', this.handleData);
+      this.dockerStream.destroy();
+    }
+
+    handleData = (buffer) => {
+      const ev = JSON.parse(buffer.toString('utf8'));
+      const containerEvents = [
+        'attach',
+        'commit',
+        'copy',
+        'create',
+        'destroy',
+        'die',
+        'exec_create',
+        'exec_start',
+        'export',
+        'kill',
+        'oom',
+        'pause',
+        'rename',
+        'resize',
+        'restart',
+        'start',
+        'stop',
+        'top',
+        'unpause'
+      ];
+      const imageEvents = [
+        'delete',
+        'import',
+        'pull',
+        'push',
+        'tag',
+        'untag'
+      ];
+      if (containerEvents.indexOf(ev.status) !== -1) {
+        this.emit(ev.status, getContainer(ev.id));
+      }
+      if (imageEvents.indexOf(ev.status) !== -1) {
+        this.emit(ev.status, getImage(ev.id));
+      }
+    };
+  };
+
+  return new DockerEvents(stream);
+});
+
 export default {
   createContainer: createContainer,
   getContainer: getContainer,
@@ -36,5 +93,6 @@ export default {
   getImage: getImage,
   pull: pull,
   exec: exec,
-  searchImages: searchImages
+  searchImages: searchImages,
+  getEvents: getEvents
 };

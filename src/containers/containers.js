@@ -27,6 +27,15 @@ export default class Containers extends React.Component {
     };
   }
 
+  componentWillMount() {
+    this.getContainers();
+    this.subscribeEvents();
+  }
+
+  componentWillUnmount() {
+    this.dockerEvents.destroy();
+  }
+
   sortContainers = (lhs, rhs) => {
     const sort = this.state.sort;
     switch (sort.column) {
@@ -67,19 +76,26 @@ export default class Containers extends React.Component {
       });
   };
 
-  componentWillMount() {
-    this.getContainers();
-  }
+  subscribeEvents = () => {
+    docker.getEvents().then(dockerEvents => {
+      this.dockerEvents = dockerEvents;
+      dockerEvents.on('start', () => this.getContainers());
+      dockerEvents.on('die', () => this.getContainers());
+      dockerEvents.on('destroy', () => this.getContainers());
+    });
+  };
 
   doAction = (action, containerId) => {
     const container = docker.getContainer(containerId);
     let promise;
     switch (action) {
       case 'stop':
+        promise = container.stopAsync({ t: 5 });
+        break;
       case 'start':
       case 'restart':
       case 'remove':
-        promise = container[`${action}Async`]().finally(() => this.getContainers());
+        promise = container[`${action}Async`]();
         break;
       case 'logs':
       case 'console':

@@ -22,6 +22,15 @@ export default class Images extends React.Component {
     };
   }
 
+  componentWillMount() {
+    this.getImages();
+    this.subscribeEvents();
+  }
+
+  componentWillUnmount() {
+    this.dockerEvents.destroy();
+  }
+
   getImages = () => {
     return docker.listImages()
       .map(image => Object.assign({}, image, docker.getImage(image.Id)))
@@ -31,6 +40,15 @@ export default class Images extends React.Component {
         console.error(err);
         humane.error(err.message);
       });
+  };
+
+  subscribeEvents = () => {
+    docker.getEvents().then(dockerEvents => {
+      this.dockerEvents = dockerEvents;
+      dockerEvents.on('delete', () => this.getImages());
+      dockerEvents.on('pull', () => this.getImages());
+      dockerEvents.on('import', () => this.getImages());
+    });
   };
 
   pull = () => {
@@ -99,10 +117,6 @@ export default class Images extends React.Component {
       });
   };
 
-  componentDidMount() {
-    this.getImages();
-  }
-
   imageFilter = (image) => {
     const f = this.state.nameFilter;
 
@@ -120,8 +134,7 @@ export default class Images extends React.Component {
     let promise;
     switch (action) {
       case 'remove':
-        promise = image.removeAsync({ force: true })
-          .finally(() => this.getImages());
+        promise = image.removeAsync({ force: true });
         break;
 
       case 'create':
