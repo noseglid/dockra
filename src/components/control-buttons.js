@@ -11,6 +11,7 @@ export default React.createClass({
                 {
                   row.map((c, j) => {
                     return <ControlButton key={`${i}-${j}`} {...c}
+                                          disabled={this.props.disabled}
                                           callback={this.props.callback}
                                           callbackArgs={this.props.callbackArgs} />;
                   })
