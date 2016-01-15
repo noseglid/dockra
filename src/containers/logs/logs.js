@@ -1,19 +1,18 @@
 import React from 'react';
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
 import docker from '../../lib/docker';
 import format from '../../lib/format';
 import Terminal from '../../components/terminal';
 import StripHeader from './strip-header';
 
-export default React.createClass({
-  mixins: [ LinkedStateMixin ],
+export default class ContainerLogs extends React.Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       containerName: this.props.params.id
     };
-  },
+  }
 
   componentWillMount() {
     const container = docker.getContainer(this.props.params.id);
@@ -38,7 +37,7 @@ export default React.createClass({
         });
       });
     }).catch(err => console.error(err));
-  },
+  }
 
   componentWillUnmount() {
     if (this.state.terminalStream) {
@@ -51,7 +50,7 @@ export default React.createClass({
     }
 
     this.setState({ stream: null, terminalStream: null });
-  },
+  }
 
   render() {
     const terminalComponent = this.state.terminalStream ?
@@ -64,4 +63,4 @@ export default React.createClass({
       </div>
     );
   }
-});
+}

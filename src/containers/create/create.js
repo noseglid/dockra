@@ -1,23 +1,21 @@
 import React from 'react';
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import linkState from 'react-link-state';
 import update from 'react-addons-update';
-import NestLinkedStateMixin from 'react-nest-link-state';
 import format from '../../lib/format';
 import docker from '../../lib/docker';
 import humane from 'humane-js';
 
-export default React.createClass({
-  mixins: [ LinkedStateMixin, NestLinkedStateMixin ],
-
-  getInitialState() {
-    return {
+export default class CreateContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       container: {
         Env: [],
         Tty: true,
         Image: this.props.params.imageId
       }
     };
-  },
+  }
 
   componentDidMount() {
     docker.getImage(this.state.container.Image).inspectAsync()
@@ -29,21 +27,21 @@ export default React.createClass({
           container: update(this.state.container, { Image: { $set: repoTag } })
         });
       });
-  },
+  }
 
-  removeEnv(index) {
+  removeEnv = (index) => {
     const container = this.state.container;
     container.Env.splice(index, 1);
     this.setState({ container: container });
-  },
+  };
 
-  addEnv() {
+  addEnv = () => {
     const container = this.state.container;
     container.Env = container.Env.concat('');
     this.setState({ container: container });
-  },
+  };
 
-  createContainer() {
+  createContainer = () => {
     let createOpts = this.state.container;
     if (this.state.container.Cmd) {
       createOpts = update(this.state.container, {
@@ -66,7 +64,7 @@ export default React.createClass({
         humane.error(err.message);
         console.error(err);
       });
-  },
+  };
 
   render() {
     return (
@@ -77,35 +75,35 @@ export default React.createClass({
           <div className="form-group">
             <label htmlFor="input-name" className="col-sm-2 control-label">Name</label>
             <div className="col-sm-10">
-              <input type="text" className="form-control" id="input-name" valueLink={this.nestLinkedState([ 'container', 'name' ])} placeholder="Container name (default: <generated>)" />
+              <input type="text" className="form-control" id="input-name" valueLink={linkState(this, 'container.name')} placeholder="Container name (default: <generated>)" />
             </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="input-hostname" className="col-sm-2 control-label">Hostname</label>
             <div className="col-sm-10">
-              <input type="text" className="form-control" id="input-hostname" valueLink={this.nestLinkedState([ 'container', 'Hostname' ])} placeholder="Container hostname (default: container id)" />
+              <input type="text" className="form-control" id="input-hostname" valueLink={linkState(this, 'container.Hostname')} placeholder="Container hostname (default: container id)" />
             </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="input-cmd" className="col-sm-2 control-label">Command</label>
             <div className="col-sm-10">
-              <input type="text" className="form-control" id="input-cmd" valueLink={this.nestLinkedState([ 'container', 'Cmd' ])} placeholder="Command to run" />
+              <input type="text" className="form-control" id="input-cmd" valueLink={linkState(this, 'container.Cmd')} placeholder="Command to run" />
             </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="input-wd" className="col-sm-2 control-label">Working dir</label>
             <div className="col-sm-10">
-              <input type="text" className="form-control" id="input-wd" valueLink={this.nestLinkedState([ 'container', 'WorkingDir' ])} placeholder="Working directory for command" />
+              <input type="text" className="form-control" id="input-wd" valueLink={linkState(this, 'container.WorkingDir')} placeholder="Working directory for command" />
             </div>
           </div>
 
           <div className="form-group">
             <div className="col-sm-offset-2 col-sm-10">
               <div className="checkbox">
-                <label><input type="checkbox" checkedLink={this.linkState('startOnCreated')} /> Start container when created</label>
+                <label><input type="checkbox" checkedLink={linkState(this, 'startOnCreated')} /> Start container when created</label>
               </div>
             </div>
           </div>
@@ -116,7 +114,7 @@ export default React.createClass({
                 <div key={index} className="form-group">
                   <label htmlFor="input-env-{$index}" className="col-sm-2 control-label">Environment</label>
                   <div className="col-sm-9">
-                    <input type="text" className="form-control" id="input-env-${index}" valueLink={this.nestLinkedState(['container', 'Env', index])} placeholder="KEY=VALUE" />
+                    <input type="text" className="form-control" id="input-env-${index}" valueLink={linkState(this, `container.Env.${index}`)} placeholder="KEY=VALUE" />
                   </div>
                   <div className="col-sm-1">
                     <button className="form-control btn btn-default btn-xs" onClick={this.removeEnv.bind(this, index)}>
@@ -145,4 +143,4 @@ export default React.createClass({
       </div>
     );
   }
-});
+}

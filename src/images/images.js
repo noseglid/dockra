@@ -1,18 +1,18 @@
 import React from 'react';
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import linkState from 'react-link-state';
 import humane from 'humane-js';
 import ListFilter from '../components/list-filter';
 import Image from './image';
 import PullControls from './pull-controls';
 import PullStatus from './pull-status';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { FormattedPlural } from 'react-intl';
 import docker from '../lib/docker';
 
-export default React.createClass({
-  mixins: [ IntlMixin, LinkedStateMixin ],
+export default class Images extends React.Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       images: [],
       layers: {},
       nameFilter: '',
@@ -20,9 +20,9 @@ export default React.createClass({
       tag: '',
       pulling: false
     };
-  },
+  }
 
-  getImages() {
+  getImages = () => {
     return docker.listImages()
       .map(image => Object.assign({}, image, docker.getImage(image.Id)))
       .then(images => images.sort((lhs, rhs) => lhs.Id.localeCompare(rhs.Id)))
@@ -31,9 +31,9 @@ export default React.createClass({
         console.error(err);
         humane.error(err.message);
       });
-  },
+  };
 
-  pull() {
+  pull = () => {
     const t = `${this.state.repo}:${this.state.tag || 'latest'}`;
     this.setState({ pulling: true });
     docker.pull(t)
@@ -97,13 +97,13 @@ export default React.createClass({
           this.setState({ layers: {}, pulling: false });
         }
       });
-  },
+  };
 
   componentDidMount() {
     this.getImages();
-  },
+  }
 
-  imageFilter(image) {
+  imageFilter = (image) => {
     const f = this.state.nameFilter;
 
     if (!f || // No filter - include all
@@ -113,9 +113,9 @@ export default React.createClass({
     }
 
     return false;
-  },
+  };
 
-  doAction(action, imageId) {
+  doAction = (action, imageId) => {
     const image = docker.getImage(imageId);
     let promise;
     switch (action) {
@@ -131,7 +131,7 @@ export default React.createClass({
     this.forceUpdate();
 
     promise.catch(err => humane.error(`Failed to ${action}: ${err.message}`));
-  },
+  };
 
   render() {
     const rows = [].concat.apply([], this.state.images.map(image => image.RepoTags.map(repoTag => ({
@@ -144,11 +144,11 @@ export default React.createClass({
     const filteredImages = rows.filter(this.imageFilter);
     return (
       <div id="images" className="container">
-        <PullControls pulling={this.state.pulling} tag={this.linkState('tag')} repo={this.linkState('repo')} onClick={this.pull} />
+        <PullControls pulling={this.state.pulling} tag={linkState(this, 'tag')} repo={linkState(this, 'repo')} onClick={this.pull} />
         <PullStatus layers={this.state.layers} />
 
-        <h1>Images <small><FormattedMessage message={this.getIntlMessage('images.filtered')} num={filteredImages.length} /></small></h1>
-        <ListFilter freeText={this.linkState('nameFilter')} />
+        <h1>Images <small>{ filteredImages.length } <FormattedPlural one="image" other="images" value={filteredImages.length} /></small></h1>
+        <ListFilter freeText={linkState(this, 'nameFilter')} />
         <table className="table table-striped filtered">
           <thead>
             <tr>
@@ -167,4 +167,4 @@ export default React.createClass({
       </div>
     );
   }
-});
+}

@@ -4,9 +4,9 @@ import { CubeGrid as Spinner } from '../components/spinner';
 import DockerRegistry from '../lib/docker-registry';
 import docker from '../lib/docker';
 
-export default React.createClass({
+export default class PullControls extends React.Component {
 
-  fetchRepos(query) {
+  fetchRepos = (query) => {
     if (!query && !this.props.repo.value) {
       return Promise.resolve();
     } else if (!query) {
@@ -20,9 +20,9 @@ export default React.createClass({
       )
       .then(repos => ({ options: repos }))
       .catch(err => {/* Ignore this, no repos found. Showing an empty list is the best course of action here */ });
-  },
+  };
 
-  fetchTags() {
+  fetchTags = () => {
     if (!this.props.repo.value) {
       return Promise.resolve();
     }
@@ -31,16 +31,16 @@ export default React.createClass({
       .map(tag => ({ value: tag.name, label: tag.name }))
       .then(tags => ({ options: tags, complete: true }))
       .catch(err => {/* Ignore this, no tags found. Showing an empty list is the best course of action here */ });
-  },
+  };
 
-  repoChanged(repo) {
+  repoChanged = (repo) => {
     this.props.repo.requestChange(repo ? repo.value : '');
     this.props.tag.requestChange('');
-  },
+  };
 
-  tagChanged(tag) {
+  tagChanged = (tag) => {
     this.props.tag.requestChange(tag ? tag.value : '');
-  },
+  };
 
   render() {
     return (
@@ -78,4 +78,4 @@ export default React.createClass({
       </div>
     );
   }
-});
+}

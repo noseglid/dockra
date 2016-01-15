@@ -4,7 +4,7 @@ import controls from './image-controls';
 import ControlButtons from '../components/control-buttons';
 import { CubeGrid } from '../components/spinner';
 
-export default React.createClass({
+export default class Image extends React.Component {
   render() {
     return (
       <tr>
@@ -20,4 +20,4 @@ export default React.createClass({
       </tr>
     );
   }
-});
+}

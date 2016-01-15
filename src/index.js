@@ -3,9 +3,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, Link, IndexRedirect } from 'react-router';
-import { IntlMixin } from 'react-intl';
+import { IntlProvider } from 'react-intl';
 import humane from 'humane-js';
-import intlData from './localization/intl-data.js';
 import Containers from './containers/containers';
 import CreateContainer from './containers/create/create';
 import ConsoleContainer from './containers/console/console';
@@ -35,8 +34,6 @@ humane.success = humane.spawn({
 
 
 const Main = React.createClass({
-  mixin: [ IntlMixin ],
-
   render() {
     const isActive = this.props.history.isActive;
     const links = [ 'containers', 'images' ];
@@ -64,20 +61,17 @@ const Main = React.createClass({
   }
 });
 
-function createElement(Component, props) {
-  const newProps = Object.assign({}, props, props.route);
-  return (<Component {...newProps} />);
-}
-
 ReactDOM.render((
-  <Router createElement={createElement}>
-    <Route path="/" component={Main} >
-      <IndexRedirect to="/containers" />
-      <Route path="containers" component={Containers} {...intlData} />
-      <Route path="containers/create/:imageId" component={CreateContainer} {...intlData} />
-      <Route path="containers/console/:containerId" component={ConsoleContainer} {...intlData} />
-      <Route path="containers/logs/:id" component={LogsContainer} {...intlData} />
-      <Route path="images" component={Images} {...intlData} />
-    </Route>
-  </Router>
+    <IntlProvider locale="en">
+      <Router>
+        <Route path="/" component={Main} >
+          <IndexRedirect to="/containers" />
+          <Route path="containers" component={Containers} />
+          <Route path="containers/create/:imageId" component={CreateContainer} />
+          <Route path="containers/console/:containerId" component={ConsoleContainer} />
+          <Route path="containers/logs/:id" component={LogsContainer} />
+          <Route path="images" component={Images} />
+        </Route>
+      </Router>
+    </IntlProvider>
 ), document.getElementById('content'));

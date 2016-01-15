@@ -11,8 +11,6 @@ export default class Console extends React.Component {
       stream: null,
       exec: null
     };
-
-    this.handleResize = this.handleResize.bind(this);
   }
 
   componentWillMount() {
@@ -40,9 +38,9 @@ export default class Console extends React.Component {
       });
   }
 
-  handleResize(w, h) {
+  handleResize = (w, h) => {
     this.state.exec.resizeAsync({ w: w, h: h });
-  }
+  };
 
   render() {
     const termComponent = this.state.stream ?

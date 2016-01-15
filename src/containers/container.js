@@ -8,7 +8,7 @@ import controls from './container-controls.js';
 import ControlButtons from '../components/control-buttons';
 import format from '../lib/format';
 
-export default React.createClass({
+export default class Container extends React.Component {
   render() {
     const formattedName = format.containerName(this.props.Name);
     const rowClassNames = classNames({
@@ -31,4 +31,4 @@ export default React.createClass({
       </tr>
     );
   }
-});
+}

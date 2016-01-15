@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import React from 'react';
-import { IntlMixin, FormattedMessage } from 'react-intl';
-import LinkedStateMixin from 'react-addons-linked-state-mixin';
+import { FormattedPlural } from 'react-intl';
+import linkState from 'react-link-state';
 import humane from 'humane-js';
 import classNames from 'classnames';
 import ListFilter from '../components/list-filter';
@@ -14,20 +14,20 @@ function genericCompare(lhs, rhs, dir) {
   return (lhs < rhs ? -1 : 1) * (dir === 'desc' ? 1 : -1);
 }
 
-export default React.createClass({
-  mixins: [ IntlMixin, LinkedStateMixin ],
+export default class Containers extends React.Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       containers: [],
       sort: {
         column: 'names',
         direction: 'desc'
       }
     };
-  },
+  }
 
-  sortContainers(lhs, rhs) {
+  sortContainers = (lhs, rhs) => {
     const sort = this.state.sort;
     switch (sort.column) {
       case 'names':
@@ -52,9 +52,9 @@ export default React.createClass({
       default:
         return -1;
     }
-  },
+  };
 
-  getContainers() {
+  getContainers = () => {
     docker.listContainers({ all: 1 })
       .then(containers => {
         Promise.all(containers.map(c => docker.getContainer(c.Id).inspectAsync()))
@@ -65,13 +65,13 @@ export default React.createClass({
         console.error(err);
         humane.error(err.message);
       });
-  },
+  };
 
   componentWillMount() {
     this.getContainers();
-  },
+  }
 
-  doAction(action, containerId) {
+  doAction = (action, containerId) => {
     const container = docker.getContainer(containerId);
     let promise;
     switch (action) {
@@ -96,9 +96,9 @@ export default React.createClass({
       console.error(err);
       humane.error(`Failed to ${action} container: ${err.message}`);
     });
-  },
+  };
 
-  containerFilter(container) {
+  containerFilter = (container) => {
     const f = this.state.nameFilter;
     if (!f) {
       return true;
@@ -113,15 +113,15 @@ export default React.createClass({
     }
 
     return false;
-  },
+  };
 
-  nextDirection(currentDirection) {
+  nextDirection = (currentDirection) => {
     if (currentDirection === 'both') return 'desc';
     if (currentDirection === 'desc') return 'asc';
     if (currentDirection === 'asc') return 'desc';
-  },
+  };
 
-  sortColumn(e) {
+  sortColumn = (e) => {
     let nd;
     let nc;
     if (e.target.innerText.toLowerCase() === this.state.sort.column) {
@@ -134,14 +134,14 @@ export default React.createClass({
       nc = e.target.innerText.toLowerCase();
     }
     this.setState({ sort: { column: nc, direction: nd } });
-  },
+  };
 
   render() {
     const filteredContainers = this.state.containers.filter(this.containerFilter).sort(this.sortContainers);
     return (
       <div id="containers" className="container">
-        <h1>Containers <small><FormattedMessage message={this.getIntlMessage('containers.filtered')} num={filteredContainers.length} /></small></h1>
-        <ListFilter freeText={this.linkState('nameFilter')} />
+        <h1>Containers <small>{ filteredContainers.length } <FormattedPlural one="container" other="containers" value={filteredContainers.length} /></small></h1>
+        <ListFilter freeText={linkState(this, 'nameFilter')} />
         <table className="table filtered sortable">
           <thead>
             <tr>
@@ -165,4 +165,4 @@ export default React.createClass({
       </div>
     );
   }
-});
+}
