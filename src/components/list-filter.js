@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default React.createClass({
+export default class ListFilter extends React.Component {
   render() {
     return (
       <form className="form-horizontal">
@@ -12,4 +12,4 @@ export default React.createClass({
       </form>
     );
   }
-});
+}

@@ -50,7 +50,7 @@ export default class ReactTerminal extends React.Component {
     };
   }
 
-  handleResize() {
+  handleResize = () => {
     $('.terminal').css('top', $('.terminal').parent().position().top + 'px');
 
     const geometry = this.terminalGeometry();
@@ -59,7 +59,7 @@ export default class ReactTerminal extends React.Component {
     if (this.props.onResize) {
       this.props.onResize(geometry.w, geometry.h);
     }
-  }
+  };
 
   render() {
     return (<div></div>);

@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-const CubeGrid = React.createClass({
+class CubeGrid extends React.Component {
   render() {
     const cl = classNames('spinner', 'sk-cube-grid', {
       'fade-in': this.props.fadeIn
@@ -24,9 +24,9 @@ const CubeGrid = React.createClass({
       </div>
     );
   }
-});
+}
 
-const FoldingCube = React.createClass({
+class FoldingCube extends React.Component {
   render() {
     const cl = classNames('spinner', 'sk-folding-cube', {
       'fade-in': this.props.fadeIn
@@ -44,6 +44,6 @@ const FoldingCube = React.createClass({
       </div>
     );
   }
-});
+}
 
 export { FoldingCube, CubeGrid };

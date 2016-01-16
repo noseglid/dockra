@@ -63,8 +63,8 @@ export default class Images extends React.Component {
 
         return new Promise((resolve, reject) => {
           this.pullEvents.on('tick', () => this.setState({ layers: pullEvents.getLayers() }));
-          this.pullEvents.on('end', () => { console.log('end'); resolve(); });
-          this.pullEvents.on('error', () => { console.log('error'); reject(); });
+          this.pullEvents.on('end', resolve);
+          this.pullEvents.on('error', reject);
         });
       })
       .catch(err => {

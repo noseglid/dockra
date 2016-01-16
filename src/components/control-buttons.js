@@ -1,7 +1,7 @@
 import React from 'react';
 import ControlButton from './control-button';
 
-export default React.createClass({
+export default class ControlButtons extends React.Component {
   render() {
     return (
       <fieldset disabled={this.props.disabled}>
@@ -22,4 +22,4 @@ export default React.createClass({
       </fieldset>
     );
   }
-});
+}

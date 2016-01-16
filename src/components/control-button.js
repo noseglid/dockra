@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-export default React.createClass({
+export default class ControlButton extends React.Component {
   render() {
     const iconClass = classNames('glyphicon', {
       [ `glyphicon-${this.props.icon}` ]: true
@@ -18,4 +18,4 @@ export default React.createClass({
       </button>
     );
   }
-});
+}
