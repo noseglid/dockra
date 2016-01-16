@@ -34,6 +34,7 @@ export default class Containers extends React.Component {
 
   componentWillUnmount() {
     this.dockerEvents.destroy();
+    this.listContainersPromise.cancel();
   }
 
   sortContainers = (lhs, rhs) => {
@@ -64,9 +65,13 @@ export default class Containers extends React.Component {
   };
 
   getContainers = () => {
-    docker.listContainers({ all: 1 })
+    if (this.listContainersPromise) {
+      this.listContainersPromise.cancel();
+    }
+
+    this.listContainersPromise = docker.listContainers({ all: 1 })
       .then(containers => {
-        Promise.all(containers.map(c => docker.getContainer(c.Id).inspectAsync()))
+        return Promise.all(containers.map(c => docker.getContainer(c.Id).inspectAsync()))
           .then(res => containers.map((c, i) => Object.assign({}, res[i], c)))
           .then(c => this.setState({ containers: c }));
       })

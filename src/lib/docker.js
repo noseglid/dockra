@@ -5,6 +5,10 @@ import Promise from 'bluebird';
 import { DockerEvents, PullEvents } from './docker-classes';
 import config from '../config';
 
+Promise.config({
+  cancellation: true
+});
+
 const parsedUrl = parse(config.docker.host);
 const certpath = config.docker.certPath;
 const handle = Promise.promisifyAll(new Docker({
