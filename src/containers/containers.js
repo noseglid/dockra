@@ -114,7 +114,7 @@ export default class Containers extends React.Component {
     });
   };
 
-  containerFilter = (container) => {
+  filterContainers = (container) => {
     const f = this.state.nameFilter;
     if (!f) {
       return true;
@@ -153,7 +153,7 @@ export default class Containers extends React.Component {
   };
 
   render() {
-    const filteredContainers = this.state.containers.filter(this.containerFilter).sort(this.sortContainers);
+    const filteredContainers = this.state.containers.filter(this.filterContainers).sort(this.sortContainers);
     return (
       <div id="containers" className="container">
         <h1>Containers <small>{ filteredContainers.length } <FormattedPlural one="container" other="containers" value={filteredContainers.length} /></small></h1>

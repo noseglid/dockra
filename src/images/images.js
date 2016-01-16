@@ -29,6 +29,9 @@ export default class Images extends React.Component {
 
   componentWillUnmount() {
     this.dockerEvents.destroy();
+    if (this.pullEvents) {
+      this.pullEvents.destroy();
+    }
   }
 
   getImages = () => {
@@ -55,54 +58,13 @@ export default class Images extends React.Component {
     const t = `${this.state.repo}:${this.state.tag || 'latest'}`;
     this.setState({ pulling: true });
     docker.pull(t)
-      .then((stream) => {
+      .then(pullEvents => {
+        this.pullEvents = pullEvents;
+
         return new Promise((resolve, reject) => {
-          stream.on('data', buf => {
-            const ev = JSON.parse(buf.toString('utf8'));
-            if (ev.error) {
-              stream.removeAllListeners();
-              reject(new Error(ev.error));
-              return;
-            }
-
-            if (!ev.progressDetail) {
-              /* not layer progress event */
-              return;
-            }
-
-            const layers = this.state.layers;
-            if (ev.id in layers) {
-              /* existing layer, update values */
-              layers[ev.id].ev = ev;
-              const now = new Date();
-              if (ev.progressDetail.current && ev.progressDetail.total &&
-                1000 < now - layers[ev.id].speed.lastUpdate) {
-                const byteDiff = (ev.progressDetail.current - layers[ev.id].speed.lastBytes);
-                const timeDiff = now - layers[ev.id].speed.lastUpdate;
-                layers[ev.id].speed = {
-                  bytesPerSecond: 1000 * Math.round(byteDiff / timeDiff),
-                  lastUpdate: now,
-                  lastBytes: ev.progressDetail.current
-                };
-              }
-            } else {
-              /* new layer, initialize */
-              layers[ev.id] = {
-                ev: ev,
-                speed: {
-                  lastUpdate: new Date(),
-                  lastBytes: 0,
-                  bytesPerSecond: 0
-                }
-              };
-            }
-
-            if (this.isMounted()) {
-              this.setState({ layers: layers });
-            }
-          });
-          stream.on('end', resolve);
-          stream.on('error', reject);
+          this.pullEvents.on('tick', () => this.setState({ layers: pullEvents.getLayers() }));
+          this.pullEvents.on('end', () => { console.log('end'); resolve(); });
+          this.pullEvents.on('error', () => { console.log('error'); reject(); });
         });
       })
       .catch(err => {
@@ -110,10 +72,8 @@ export default class Images extends React.Component {
         humane.error(`Failed to pull ${t}: ${err.message}`);
       })
       .finally(() => {
-        if (this.isMounted()) {
-          this.getImages();
-          this.setState({ layers: {}, pulling: false });
-        }
+        this.getImages();
+        this.setState({ layers: {}, pulling: false });
       });
   };
 
