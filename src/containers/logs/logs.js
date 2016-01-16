@@ -54,7 +54,7 @@ export default class ContainerLogs extends React.Component {
 
   render() {
     const terminalComponent = this.state.terminalStream ?
-      <Terminal stream={this.state.terminalStream} /> : null;
+      <Terminal stream={this.state.terminalStream} ignoreStreamEnd={true} /> : null;
 
     return (
       <div className="container-fluid" id="logs">

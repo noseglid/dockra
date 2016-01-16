@@ -15,7 +15,13 @@ export default class ReactTerminal extends React.Component {
         useStyle: true
       })
     };
-    this.handleResize = this.handleResize.bind(this);
+
+    this.reallyDestroyTerminal = this.state.terminal.destroy.bind(this.state.terminal);
+
+    if (this.props.ignoreStreamEnd) {
+      this.state.terminal.destroy = () => { /* no-op in this case */ };
+      this.state.terminal.destroySoon = () => { /* no-op in this case */ };
+    }
   }
 
   componentDidMount() {
@@ -34,7 +40,7 @@ export default class ReactTerminal extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
-    this.state.terminal.destroy();
+    this.reallyDestroyTerminal();
   }
 
   terminalGeometry() {
