@@ -47,7 +47,7 @@ export default class PullControls extends React.Component {
       <div className="row">
         <div className="col-sm-4">
           <Select.Async
-            key={Math.random().toString()}
+            key={this.props.repo.value || Math.random().toString()}
             value={this.props.repo.value}
             onChange={this.repoChanged}
             disabled={this.props.pulling}

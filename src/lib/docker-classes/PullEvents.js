@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { EventEmitter } from 'events';
 
 export default class PullEvents extends EventEmitter {
@@ -54,12 +55,17 @@ export default class PullEvents extends EventEmitter {
   };
 
   handleEnd = () => {
+    this.emit('tick');
     this.emit('end');
   };
 
   handleError = (...args) => {
     this.emit('error', args);
   };
+
+  tick = _.throttle(() => {
+    this.emit('tick');
+  }, 100);
 
   handleData = (buffer) => {
     const ev = JSON.parse(buffer.toString('utf8'));
@@ -75,6 +81,6 @@ export default class PullEvents extends EventEmitter {
     }
 
     (ev.id in this.layers ? this.updateLayer : this.newLayer)(ev);
-    this.emit('tick');
+    this.tick();
   };
 }
