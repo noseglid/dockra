@@ -14,7 +14,8 @@ export default class Console extends React.Component {
   }
 
   componentWillMount() {
-    docker.getContainer(this.props.params.containerId).inspectAsync()
+    docker.getContainer(this.props.params.containerId)
+      .then(container => container.inspectAsync())
       .then(container => this.setState({ containerName: format.containerName(container.Name) }));
 
     const execOpts = {

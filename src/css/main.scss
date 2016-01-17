@@ -34,6 +34,11 @@ ul.nav {
   cursor: default;
 }
 
+.fa-spin-hover:hover {
+  animation: fa-spin 2s infinite linear;
+  color: lighten($brand-primary, 10%);
+}
+
 @keyframes fade-in {
   0% {
       opacity: 0;

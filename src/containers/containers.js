@@ -33,8 +33,12 @@ export default class Containers extends React.Component {
   }
 
   componentWillUnmount() {
-    this.dockerEvents.destroy();
-    this.listContainersPromise.cancel();
+    if (this.dockerEvents) {
+      this.dockerEvents.destroy();
+    }
+    if (this.listContainersPromise) {
+      this.listContainersPromise.cancel();
+    }
   }
 
   sortContainers = (lhs, rhs) => {
@@ -71,13 +75,16 @@ export default class Containers extends React.Component {
 
     this.listContainersPromise = docker.listContainers({ all: 1 })
       .then(containers => {
-        return Promise.all(containers.map(c => docker.getContainer(c.Id).inspectAsync()))
+        return Promise.all(containers.map(c => docker.getContainer(c.Id).then(container => container.inspectAsync())))
           .then(res => containers.map((c, i) => Object.assign({}, res[i], c)))
           .then(c => this.setState({ containers: c }));
       })
       .catch(err => {
         console.error(err);
         humane.error(err.message);
+      })
+      .finally(() => {
+        this.listContainersPromise = null;
       });
   };
 
@@ -87,33 +94,33 @@ export default class Containers extends React.Component {
       dockerEvents.on('start', () => this.getContainers());
       dockerEvents.on('die', () => this.getContainers());
       dockerEvents.on('destroy', () => this.getContainers());
+    }).catch(err => {
+      humane.info(`Failed to subscribe to docker events due to: '${err.message}'.\nList may be outdated over time`);
+      console.error(err);
     });
   };
 
   doAction = (action, containerId) => {
-    const container = docker.getContainer(containerId);
-    let promise;
-    switch (action) {
-      case 'stop':
-        promise = container.stopAsync({ t: 5 });
-        break;
-      case 'start':
-      case 'restart':
-      case 'remove':
-        promise = container[`${action}Async`]();
-        break;
-      case 'logs':
-      case 'console':
-        return this.props.history.push(`/containers/${action}/${containerId}`);
-      default:
-        console.error('Invalid container action:', action);
-        return false;
-    }
+    docker.getContainer(containerId).then(container => {
+      this.state.containers.find(c => containerId === c.Id).loading = true;
+      this.forceUpdate();
 
-    this.state.containers.find(c => containerId === c.Id).loading = true;
-    this.forceUpdate();
-
-    promise.catch(err => {
+      switch (action) {
+        case 'stop':
+          return container.stopAsync({ t: 5 });
+        case 'start':
+        case 'restart':
+        case 'remove':
+          return container[`${action}Async`]();
+        case 'logs':
+        case 'console':
+          return this.props.history.push(`/containers/${action}/${containerId}`);
+        default:
+          console.error('Invalid container action:', action);
+          return false;
+      }
+    })
+    .catch(err => {
       console.error(err);
       humane.error(`Failed to ${action} container: ${err.message}`);
     });

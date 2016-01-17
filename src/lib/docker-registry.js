@@ -2,12 +2,12 @@ import request from 'request';
 import Promise from 'bluebird';
 import config from '../config';
 
-const promisedRequest = Promise.promisify(request).defaults({
-  baseUrl: `${config.docker.registry}/v1`,
-  json: true
-});
-
 function req(opts) {
+  const promisedRequest = Promise.promisify(request).defaults({
+    baseUrl: `${config.get('docker.registry')}/v1`,
+    json: true
+  });
+
   return promisedRequest(opts)
     .then(response => {
       if (response.statusCode >= 300) {

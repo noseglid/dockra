@@ -1,43 +1,66 @@
-import { readFileSync } from 'fs';
+import { readFile } from 'fs';
 import { parse } from 'url';
 import Docker from 'dockerode';
 import Promise from 'bluebird';
 import { DockerEvents, PullEvents } from './docker-classes';
 import config from '../config';
 
+const readFileAsync = Promise.promisify(readFile);
+const handleCache = {};
+
 Promise.config({
   cancellation: true
 });
 
-const parsedUrl = parse(config.docker.host);
-const certpath = config.docker.certPath;
-const handle = Promise.promisifyAll(new Docker({
-  host: parsedUrl.hostname,
-  port: parsedUrl.port,
-  ca: readFileSync(certpath + '/ca.pem'),
-  cert: readFileSync(certpath + '/cert.pem'),
-  key: readFileSync(certpath + '/key.pem')
-}));
+function getHandle() {
+  const host = config.get('docker.host');
+  const certPath = config.get('docker.certPath');
+  if (!host || !certPath) {
+    return Promise.reject(new Error('Docker connection not configured'));
+  }
 
-const createContainer = (...args) => handle.createContainerAsync(...args);
-const getContainer = (id) => Promise.promisifyAll(handle.getContainer(id));
-const listContainers = (...args) => handle.listContainersAsync(...args);
+  const cacheKey = `${host}-${certPath}`;
+  if (handleCache[cacheKey]) {
+    return Promise.resolve(handleCache[cacheKey]);
+  }
 
-const listImages = (...args) => handle.listImagesAsync(...args);
-const getImage = (id) => Promise.promisifyAll(handle.getImage(id));
+  const parsedUrl = parse(host);
 
-const pull = (repo) => handle.pullAsync(repo).then(stream => {
-  return new PullEvents(stream);
-});
+  return Promise.all([
+    readFileAsync(`${certPath}/ca.pem`),
+    readFileAsync(`${certPath}/cert.pem`),
+    readFileAsync(`${certPath}/key.pem`)
+  ]).spread((ca, cert, key) => {
+    return (handleCache[cacheKey] = Promise.promisifyAll(new Docker({
+      host: parsedUrl.hostname,
+      port: parsedUrl.port,
+      ca: ca,
+      cert: cert,
+      key: key
+    })));
+  });
+}
 
-const exec = (containerId, opts) => getContainer(containerId).execAsync(opts)
+const createContainer = (...args) => getHandle().then(handle => handle.createContainerAsync(...args));
+const getContainer = (id) => getHandle().then(handle => Promise.promisifyAll(handle.getContainer(id)));
+const listContainers = (...args) => getHandle().then(handle => handle.listContainersAsync(...args));
+
+const listImages = (...args) => getHandle().then(handle => handle.listImagesAsync(...args));
+const getImage = (id) => getHandle().then(handle => Promise.promisifyAll(handle.getImage(id)));
+
+const pull = (repo) => getHandle()
+  .then(handle => handle.pullAsync(repo))
+  .then(stream => new PullEvents(stream));
+
+const exec = (containerId, opts) => getContainer(containerId)
+  .then(container => container.execAsync(opts))
   .then(e => Promise.promisifyAll(e));
 
-const searchImages = (term) => handle.searchImagesAsync({ term: term });
+const searchImages = (term) => getHandle().then(handle => handle.searchImagesAsync({ term: term }));
 
-const getEvents = () => handle.getEventsAsync().then(stream => {
-  return new DockerEvents(stream);
-});
+const getEvents = () => getHandle()
+  .then(handle => handle.getEventsAsync())
+  .then(stream => new DockerEvents(stream));
 
 export default {
   createContainer: createContainer,

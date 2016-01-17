@@ -18,7 +18,8 @@ export default class CreateContainer extends React.Component {
   }
 
   componentDidMount() {
-    docker.getImage(this.state.container.Image).inspectAsync()
+    docker.getImage(this.state.container.Image)
+      .then(image => image.inspectAsync())
       .then(i => {
         const repoTag = i.RepoTags.find(t => !t.match(/[0-9a-f]{64}/));
         if (!repoTag) return;
@@ -51,12 +52,13 @@ export default class CreateContainer extends React.Component {
 
     docker.createContainer(createOpts)
       .then(container => {
-        let promise = Promise.resolve();
+        const promise = docker.getContainer(container.id);
         if (this.state.startOnCreated) {
-          promise = docker.getContainer(container.id).startAsync();
+          promise.then(c => { c.startAsync(); return c; });
         }
-        return promise.then(() => docker.getContainer(container.id).inspectAsync());
+        return promise;
       })
+      .then(container => container.inspectAsync())
       .then(containerInfo => {
         humane.success(`'${format.containerName(containerInfo.Name)}' successfully created${this.state.startOnCreated ? ' and started' : ''}.`);
       })

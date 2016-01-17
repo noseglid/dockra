@@ -28,7 +28,10 @@ export default class Images extends React.Component {
   }
 
   componentWillUnmount() {
-    this.dockerEvents.destroy();
+    if (this.dockerEvents) {
+      this.dockerEvents.destroy();
+    }
+
     if (this.pullEvents) {
       this.pullEvents.destroy();
     }
@@ -51,6 +54,9 @@ export default class Images extends React.Component {
       dockerEvents.on('delete', () => this.getImages());
       dockerEvents.on('pull', () => this.getImages());
       dockerEvents.on('import', () => this.getImages());
+    }).catch(err => {
+      humane.info(`Failed to subscribe to docker events due to: '${err.message}'.\nList may be outdated over time`);
+      console.error(err);
     });
   };
 
@@ -90,20 +96,21 @@ export default class Images extends React.Component {
   };
 
   doAction = (action, imageId) => {
-    const image = docker.getImage(imageId);
-    let promise;
-    switch (action) {
-      case 'remove':
-        promise = image.removeAsync({ force: true });
-        break;
+    docker.getImage(imageId)
+      .then(image => {
+        this.state.images.find(i => i.Id === imageId).loading = true;
+        this.forceUpdate();
 
-      case 'create':
-        return this.props.history.push(`/containers/create/${imageId}`);
-    }
-    this.state.images.find(i => i.Id === imageId).loading = true;
-    this.forceUpdate();
-
-    promise.catch(err => humane.error(`Failed to ${action}: ${err.message}`));
+        switch (action) {
+          case 'remove':
+            return image.removeAsync({ force: true });
+          case 'create':
+            return this.props.history.push(`/containers/create/${imageId}`);
+        }
+      })
+      .catch(err => {
+        humane.error(`Failed to ${action}: ${err.message}`);
+      });
   };
 
   render() {

@@ -15,28 +15,28 @@ export default class ContainerLogs extends React.Component {
   }
 
   componentWillMount() {
-    const container = docker.getContainer(this.props.params.id);
+    const opts = {
+      stdout: 1,
+      stderr: 1,
+      tail: 100,
+      follow: 1
+    };
 
-    container.inspectAsync().then(data => {
-      const opts = {
-        stdout: 1,
-        stderr: 1,
-        tail: 100,
-        follow: 1
-      };
-      return container.logsAsync(opts).then(stream => {
+    docker.getContainer(this.props.params.id)
+      .then(container => Promise.all([ container.inspectAsync(), container.logsAsync(opts) ]))
+      .spread((container, stream) => {
         let terminalStream = stream;
-        if (!data.Config.Tty) {
+        if (!container.Config.Tty) {
           /* Each frame is prepended with header if tty is not attached. Strip these. */
           terminalStream = terminalStream.pipe(new StripHeader());
         }
         this.setState({
           stream: stream,
           terminalStream: terminalStream,
-          containerName: format.containerName(data.Name)
+          containerName: format.containerName(container.Name)
         });
-      });
-    }).catch(err => console.error(err));
+      })
+      .catch(err => console.error(err));
   }
 
   componentWillUnmount() {
