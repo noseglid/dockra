@@ -1,12 +1,17 @@
 import React from 'react';
 import Select from 'react-select';
-import { dm } from 'nodedm';
+import { DockerMachine } from 'nodedm';
 import config from '../config';
 
 export default class DockerMachineSetting extends React.Component {
 
   constructor(props) {
     super(props);
+    this.dockerMachine = new DockerMachine(config.get('dockerMachine.executable') || 'docker-machine');
+    config.on('changed:dockerMachine.executable', (executable) => {
+      this.dockerMachine = new DockerMachine(executable || 'docker-machine');
+    });
+
     this.state = {
       machines: [],
       activeDockerUrl: config.get('docker.host'),
@@ -15,16 +20,20 @@ export default class DockerMachineSetting extends React.Component {
   }
 
   componentWillMount() {
-    dm.ls().then(machines => this.setState({
-      machineChangePending: false,
-      machines: machines
-    }));
+    this.dockerMachine.ls()
+      .then(machines => this.setState({ machines: machines, machineChangePending: false }))
+      .catch(err => {
+        this.setState({
+          machineChangePending: false
+        });
+        console.error(err);
+      });
   }
 
   machineChanged = (selected) => {
     const machine = this.state.machines.find(m => selected.value === m.name);
     this.setState({ machineChangePending: true });
-    dm.env(selected.value).then(env => {
+    this.dockerMachine.env(selected.value).then(env => {
       const certPath = env.match(/DOCKER_CERT_PATH="([^"]+)"/)[1];
       config.set('docker.host', machine.url);
       config.set('docker.certPath', certPath);

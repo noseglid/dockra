@@ -19,10 +19,6 @@ const javascriptFiles = [
   'src/**/*.jsx'
 ];
 
-const icuFiles = [
-  'src/localization/strings/*.icu'
-];
-
 const htmlFiles = [
   'src/**/*.html'
 ];
@@ -77,11 +73,6 @@ gulp.task('images', () => {
 gulp.task('fonts', () => {
   return gulp.src(fontFiles)
     .pipe(gulp.dest('dist/assets/fonts/'));
-});
-
-gulp.task('icu', () => {
-  return gulp.src(icuFiles)
-    .pipe(gulp.dest('dist/localization/strings/'));
 });
 
 gulp.task('release:dependencies', [ 'release:package.json' ], () => {
@@ -139,12 +130,12 @@ gulp.task('release:osx', [ 'release:copy', 'release:dependencies' ], () => {
     .pipe(gulp.dest(''));
 });
 
-gulp.task('build', [ 'css', 'javascript', 'html', 'images', 'fonts', 'icu' ]);
+gulp.task('build', [ 'css', 'javascript', 'html', 'images', 'fonts' ]);
 
 gulp.task('release', [ 'release:osx' ]);
 
 gulp.task('clean', () => {
-  return del('dist/');
+  return del([ 'dist/', 'release/', '.release/' ]);
 });
 
 gulp.task('watch', [ 'build' ], () => {
