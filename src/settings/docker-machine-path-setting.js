@@ -1,9 +1,9 @@
 import React from 'react';
 import config from '../config';
 
-class DockerMachineExecutableSetting extends React.Component {
+class DockerMachinePathSetting extends React.Component {
   onChange = (ev) => {
-    config.set('dockerMachine.executable', ev.target.value);
+    config.set('dockerMachine.path', ev.target.value);
     this.forceUpdate();
   };
 
@@ -11,7 +11,7 @@ class DockerMachineExecutableSetting extends React.Component {
     return (
       <div>
         <input
-          value={config.get('dockerMachine.executable')}
+          value={config.get('dockerMachine.path')}
           onChange={this.onChange}
           type="text"
           className="form-control"
@@ -19,11 +19,11 @@ class DockerMachineExecutableSetting extends React.Component {
         />
         <span className="help-text">
           Leave empty to adhere to <code>PATH</code> settings.
-          A common value for OS X and Linux is <code>/usr/local/bin/docker-machine</code>.
+          A common value for OS X and Linux is <code>/usr/local/bin</code>.
         </span>
       </div>
     );
   }
 }
 
-export default DockerMachineExecutableSetting;
+export default DockerMachinePathSetting;

@@ -1,5 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
+import { delimiter } from 'path';
 import { DockerMachine } from 'nodedm';
 import config from '../config';
 
@@ -7,10 +8,7 @@ export default class DockerMachineSetting extends React.Component {
 
   constructor(props) {
     super(props);
-    this.dockerMachine = new DockerMachine(config.get('dockerMachine.executable') || 'docker-machine');
-    config.on('changed:dockerMachine.executable', (executable) => {
-      this.dockerMachine = new DockerMachine(executable || 'docker-machine');
-    });
+    this.dockerMachine = this.createMachineBinding();
 
     this.state = {
       machines: [],
@@ -20,6 +18,28 @@ export default class DockerMachineSetting extends React.Component {
   }
 
   componentWillMount() {
+    this.listMachines();
+
+    config.on('changed:dockerMachine.path', this.machinePathChanged);
+  }
+
+  componentWillUnmount() {
+    config.removeListener('changed:dockerMachine.path', this.machinePathChanged);
+  }
+
+  machinePathChanged = () => {
+    this.dockerMachine = this.createMachineBinding();
+    this.listMachines();
+  };
+
+  createMachineBinding = () => {
+    const env = Object.assign({}, process.env, {
+      PATH: `${config.get('dockerMachine.path')}${delimiter}${process.env.PATH}`
+    });
+    return new DockerMachine('docker-machine', { execOptions: { env: env } });
+  };
+
+  listMachines = () => {
     this.dockerMachine.ls()
       .then(machines => this.setState({ machines: machines, machineChangePending: false }))
       .catch(err => {
@@ -28,7 +48,7 @@ export default class DockerMachineSetting extends React.Component {
         });
         console.error(err);
       });
-  }
+  };
 
   machineChanged = (selected) => {
     const machine = this.state.machines.find(m => selected.value === m.name);

@@ -10,7 +10,7 @@ const defaultConfig = {
     certPath: ''
   },
   dockerMachine: {
-    executable: ''
+    path: process.platform !== 'win32' ? '/usr/local/bin' : ''
   }
 };
 

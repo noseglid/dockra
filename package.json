@@ -56,7 +56,7 @@
     "jquery": "^2.1.4",
     "lodash": "^4.0.0",
     "moment": "^2.10.6",
-    "nodedm": "^0.2.0",
+    "nodedm": "^0.2.2",
     "react": "0.14.3",
     "react-addons-update": "0.14.3",
     "react-dom": "0.14.3",

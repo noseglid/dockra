@@ -1,6 +1,6 @@
 import React from 'react';
 import DockerMachineSetting from './docker-machine-setting';
-import DockerMachineExecutableSetting from './docker-machine-executable-setting';
+import DockerMachinePathSetting from './docker-machine-path-setting';
 
 export default class Settings extends React.Component {
   render() {
@@ -14,8 +14,8 @@ export default class Settings extends React.Component {
           </div>
 
           <div className="form-group">
-            <label htmlFor="input-docker-machine-executable" className="control-label col-sm-3">Docker machine executable</label>
-            <div className="col-sm-9"><DockerMachineExecutableSetting id="input-docker-machine-executable" /></div>
+            <label htmlFor="input-docker-machine-path" className="control-label col-sm-3">Docker machine path</label>
+            <div className="col-sm-9"><DockerMachinePathSetting id="input-docker-machine-path" /></div>
           </div>
         </form>
       </div>
