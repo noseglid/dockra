@@ -21,7 +21,7 @@ export default class Container extends React.Component {
         <td>{ moment.unix(this.props.Created).fromNow() }</td>
         <td>
           {
-            this.props.Ports.filter(port => port.PublicPort).map(port => <div>
+            this.props.Ports.filter(port => port.PublicPort).map(port => <div key={port.PublicPort}>
               { `${port.IP}:${port.PublicPort}` }
               <i className="fa fa-long-arrow-right"></i>
               { port.PrivatePort } <small>{ port.Type }</small>
