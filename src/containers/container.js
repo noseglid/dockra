@@ -3,7 +3,6 @@
 import React from 'react';
 import moment from 'moment';
 import classNames from 'classnames';
-import { CubeGrid } from '../components/spinner';
 import ControlButton from '../components/control-button';
 import format from '../lib/format';
 
@@ -12,7 +11,8 @@ export default class Container extends React.Component {
     const formattedName = format.containerName(this.props.Name);
     const rowClassNames = classNames({
       success: this.props.State.Running,
-      warning: !this.props.State.Running
+      warning: !this.props.State.Running,
+      loading: this.props.loading
     });
     return (
       <tr className={rowClassNames}>
@@ -28,46 +28,40 @@ export default class Container extends React.Component {
             </div>)
           }
         </td>
-        <td className="row">
-          <div className="col-sm-10">
-            <div className="btn-group">
-              <ControlButton
-                disabled={ this.props.loading || this.props.State.Running }
-                callback={ this.props.doAction.bind(null, 'start', this.props.Id) }
-                icon="play"
-              />
-              <ControlButton
-                disabled={ this.props.loading || !this.props.State.Running }
-                callback={ this.props.doAction.bind(null, 'stop', this.props.Id) }
-                icon="stop"
-              />
-              <ControlButton
-                disabled={ this.props.loading }
-                callback={ this.props.doAction.bind(null, 'restart', this.props.Id) }
-                icon="repeat"
-              />
-            </div>
-            <div className="btn-group">
-              <ControlButton
-                disabled={ this.props.loading }
-                callback={ this.props.doAction.bind(null, 'logs', this.props.Id) }
-                icon="align-left"
-              />
-              <ControlButton
-                disabled={ this.props.loading || !this.props.State.Running }
-                callback={ this.props.doAction.bind(null, 'console', this.props.Id) }
-                icon="console"
-              />
-              <ControlButton
-                disabled={ this.props.loading || this.props.State.Running }
-                callback={ this.props.doAction.bind(null, 'remove', this.props.Id) }
-                icon="trash"
-              />
-            </div>
-
+        <td>
+          <div className="btn-group">
+            <ControlButton
+              disabled={ this.props.loading || this.props.State.Running }
+              callback={ this.props.doAction.bind(null, 'start', this.props.Id) }
+              icon="play"
+            />
+            <ControlButton
+              disabled={ this.props.loading || !this.props.State.Running }
+              callback={ this.props.doAction.bind(null, 'stop', this.props.Id) }
+              icon="stop"
+            />
+            <ControlButton
+              disabled={ this.props.loading }
+              callback={ this.props.doAction.bind(null, 'restart', this.props.Id) }
+              icon="repeat"
+            />
           </div>
-          <div className="col-sm-2">
-            { this.props.loading ? <CubeGrid fadeIn /> : '' }
+          <div className="btn-group">
+            <ControlButton
+              disabled={ this.props.loading }
+              callback={ this.props.doAction.bind(null, 'logs', this.props.Id) }
+              icon="align-left"
+            />
+            <ControlButton
+              disabled={ this.props.loading || !this.props.State.Running }
+              callback={ this.props.doAction.bind(null, 'console', this.props.Id) }
+              icon="console"
+            />
+            <ControlButton
+              disabled={ this.props.loading || this.props.State.Running }
+              callback={ this.props.doAction.bind(null, 'remove', this.props.Id) }
+              icon="trash"
+            />
           </div>
         </td>
       </tr>

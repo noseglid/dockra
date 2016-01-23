@@ -21,7 +21,7 @@ export default class Containers extends React.Component {
     this.state = {
       containers: [],
       sort: {
-        column: 'names',
+        column: 'name',
         direction: 'desc'
       }
     };
@@ -166,7 +166,7 @@ export default class Containers extends React.Component {
       <div id="containers" className="container">
         <h1>Containers <small>{ filteredContainers.length } <FormattedPlural one="container" other="containers" value={filteredContainers.length} /></small></h1>
         <ListFilter freeText={linkState(this, 'nameFilter')} />
-        <table className="table filtered sortable">
+        <table className="table filtered sortable fade-in">
           <thead>
             <tr>
               {
