@@ -1,7 +1,6 @@
 import React from 'react';
 import filesize from 'filesize';
-import controls from './image-controls';
-import ControlButtons from '../components/control-buttons';
+import ControlButton from '../components/control-button';
 import { CubeGrid } from '../components/spinner';
 
 export default class Image extends React.Component {
@@ -12,11 +11,25 @@ export default class Image extends React.Component {
         <td>{this.props.tag}</td>
         <td>{filesize(this.props.virtualSize)}</td>
         <td title={this.props.id}>{this.props.id}</td>
-        <td><ControlButtons buttons={controls}
-                            callback={this.props.doAction}
-                            callbackArgs={this.props.id}
-                            disabled={this.props.loading} /></td>
-        <td>{ this.props.loading ? <CubeGrid fadeIn /> : '' }</td>
+        <td>
+          <div className="col-sm-6">
+            <div className="btn-group">
+              <ControlButton
+                disabled={ this.props.loading }
+                callback={ this.props.doAction.bind(null, 'create', this.props.id) }
+                icon="hdd"
+              />
+              <ControlButton
+                disabled={ this.props.loading }
+                callback={ this.props.doAction.bind(null, 'remove', this.props.id) }
+                icon="trash"
+              />
+            </div>
+          </div>
+          <div className="col-sm-6">
+            { this.props.loading ? <CubeGrid fadeIn /> : '' }
+          </div>
+        </td>
       </tr>
     );
   }

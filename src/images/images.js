@@ -137,7 +137,6 @@ export default class Images extends React.Component {
               <th>Virtual Size</th>
               <th>Id</th>
               <th></th>
-              <th></th>
             </tr>
           </thead>
           <tbody>

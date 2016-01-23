@@ -4,16 +4,17 @@ table.filtered {
   table-layout: fixed;
 
   td {
-    overflow: hidden;
-    text-overflow: ellipsis;
+    &, div {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
     min-width: 40px;
     height: 40px;
-    &:first-child {
-      white-space: nowrap;
+    white-space: nowrap;
+
+    .spinner {
+      float: right;
     }
-  }
-  td:last-child, th:last-child {
-    width: 30px;
   }
 }
 

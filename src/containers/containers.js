@@ -44,25 +44,21 @@ export default class Containers extends React.Component {
   sortContainers = (lhs, rhs) => {
     const sort = this.state.sort;
     switch (sort.column) {
-      case 'names':
+      case 'name':
         const n1 = format.containerName(lhs.Name).toLowerCase();
         const n2 = format.containerName(rhs.Name).toLowerCase();
         return genericCompare(n1, n2, sort.direction);
-      case 'id':
-        return genericCompare(lhs.Id, rhs.Id, sort.direction);
       case 'image':
         const i1 = lhs.Image.split(':')[0];
         const i2 = rhs.Image.split(':')[0];
         return genericCompare(i1, i2, sort.direction);
-      case 'version':
-        const v1 = lhs.Image.split(':')[1] || '<unknown>';
-        const v2 = rhs.Image.split(':')[1] || '<unknown>';
-        return genericCompare(v1, v2, sort.direction);
       case 'created':
         return genericCompare(lhs.Created, rhs.Created, sort.direction);
-      case 'state':
-        const intDirection = (sort.direction === 'desc' ? 1 : -1);
-        return lhs.State.Running === rhs.State.Running ? 0 : intDirection;
+
+      case 'ports':
+        const lhsMinPort = Math.min(...lhs.Ports.map(p => p.PublicPort)) || 65535;
+        const rhsMinPort = Math.min(...rhs.Ports.map(p => p.PublicPort)) || 65535;
+        return genericCompare(lhsMinPort, rhsMinPort, sort.direction);
       default:
         return -1;
     }
@@ -174,7 +170,7 @@ export default class Containers extends React.Component {
           <thead>
             <tr>
               {
-                [ 'Names', 'Id', 'Image', 'Version', 'Created', 'State' ].map(col => {
+                [ 'Name', 'Image', 'Created', 'Ports' ].map(col => {
                   const cl = classNames('sort', {
                     [ `sort-${this.state.sort.direction}` ]: this.state.sort.column === col.toLowerCase(),
                     [ `sort-both` ]: this.state.sort.column !== col.toLowerCase()
@@ -183,7 +179,6 @@ export default class Containers extends React.Component {
                 })
               }
               <th>Control</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>

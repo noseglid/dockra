@@ -4,8 +4,7 @@ import React from 'react';
 import moment from 'moment';
 import classNames from 'classnames';
 import { CubeGrid } from '../components/spinner';
-import controls from './container-controls.js';
-import ControlButtons from '../components/control-buttons';
+import ControlButton from '../components/control-button';
 import format from '../lib/format';
 
 export default class Container extends React.Component {
@@ -18,16 +17,59 @@ export default class Container extends React.Component {
     return (
       <tr className={rowClassNames}>
         <td title={formattedName}>{ formattedName }</td>
-        <td>{ format.hash(this.props.Id) }</td>
-        <td>{ this.props.Image.split(':')[0] } (<small>{ format.hash(this.props.ImageID) }</small>)</td>
-        <td>{ this.props.Image.split(':')[1] || '<unkown>'}</td>
-        <td>{ moment.unix(this.props.Created).format('llll') }</td>
-        <td>{ this.props.State.Running ? 'Up' : 'Down' }</td>
-        <td><ControlButtons buttons={controls}
-                            callback={ this.props.doAction }
-                            callbackArgs={ this.props.Id }
-                            disabled={ this.props.loading } /></td>
-        <td>{ this.props.loading ? <CubeGrid fadeIn /> : '' }</td>
+        <td>{ this.props.Image }</td>
+        <td>{ moment.unix(this.props.Created).fromNow() }</td>
+        <td>
+          {
+            this.props.Ports.filter(port => port.PublicPort).map(port => <div>
+              { `${port.IP}:${port.PublicPort}` }
+              <i className="fa fa-long-arrow-right"></i>
+              { port.PrivatePort } <small>{ port.Type }</small>
+            </div>)
+          }
+        </td>
+        <td className="row">
+          <div className="col-sm-10">
+            <div className="btn-group">
+              <ControlButton
+                disabled={ this.props.loading || this.props.State.Running }
+                callback={ this.props.doAction.bind(null, 'start', this.props.Id) }
+                icon="play"
+              />
+              <ControlButton
+                disabled={ this.props.loading || !this.props.State.Running }
+                callback={ this.props.doAction.bind(null, 'stop', this.props.Id) }
+                icon="stop"
+              />
+              <ControlButton
+                disabled={ this.props.loading }
+                callback={ this.props.doAction.bind(null, 'restart', this.props.Id) }
+                icon="repeat"
+              />
+            </div>
+            <div className="btn-group">
+              <ControlButton
+                disabled={ this.props.loading }
+                callback={ this.props.doAction.bind(null, 'logs', this.props.Id) }
+                icon="align-left"
+              />
+              <ControlButton
+                disabled={ this.props.loading || !this.props.State.Running }
+                callback={ this.props.doAction.bind(null, 'console', this.props.Id) }
+                icon="console"
+              />
+              <ControlButton
+                disabled={ this.props.loading || this.props.State.Running }
+                callback={ this.props.doAction.bind(null, 'remove', this.props.Id) }
+                icon="trash"
+              />
+            </div>
+
+          </div>
+          <div className="col-sm-2">
+            { this.props.loading ? <CubeGrid fadeIn /> : '' }
+          </div>
+        </td>
       </tr>
     );
   }
