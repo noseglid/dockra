@@ -1,15 +1,28 @@
 @import 'variables';
 
+$font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+$font-size: 12px;
+
 .terminal {
   -webkit-user-select: text;
-  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-family: $font-family;
+  font-size: $font-size;
   float: none;
-  font-size: 12px;
   position: absolute;
-  box-sizing: border-box;
   left: 15px;
   right: 15px;
   bottom: 30px;
+}
+
+.terminal-test {
+  font-family: $font-family;
+  font-size: $font-size;
+  position: absolute;
+  float: left;
+  visibility: hidden;
+  height: auto;
+  width: auto;
+  white-space: nowrap;
 }
 
 .terminal-cursor {

@@ -24,6 +24,16 @@ export default class ReactTerminal extends React.Component {
     }
   }
 
+  getFontGeometry = () => {
+    const o = $('<div>A</div>')
+      .addClass('terminal-test')
+      .appendTo($('body'));
+    const w = o[0].getBoundingClientRect().width;
+    const h = o[0].getBoundingClientRect().height;
+    o.remove();
+    return { w: w, h: h};
+  };
+
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
     this.state.terminal.open(ReactDOM.findDOMNode(this));
@@ -44,9 +54,10 @@ export default class ReactTerminal extends React.Component {
   }
 
   terminalGeometry() {
+    const fontGeometry = this.getFontGeometry();
     return {
-      w: Math.floor($('.terminal').width() / 7.3), // 7.3 is the width of 12px Menlo (monospace) font
-      h: Math.floor($('.terminal').height() / 17) // 17 is the  line height
+      w: Math.floor($('.terminal').width() / fontGeometry.w),
+      h: Math.floor($('.terminal').height() / fontGeometry.h)
     };
   }
 
