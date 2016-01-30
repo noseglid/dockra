@@ -1,0 +1,23 @@
+@keyframes fade-in {
+  0% {
+      opacity: 0;
+  }
+  50% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0% {
+      -webkit-transform:translateY(0) scaleY(1);
+  }
+  50% {
+      -webkit-transform:translateY(5px) scaleY(0.8);
+  }
+  100% {
+      -webkit-transform:translateY(0) scaleY(1);
+  }
+}

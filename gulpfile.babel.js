@@ -11,7 +11,8 @@ const $ = gulpLoadPlugins();
 const cssFiles = [
   'src/**/*.scss',
   'node_modules/humane-js/themes/jackedup.css',
-  'node_modules/react-select/dist/react-select.css'
+  'node_modules/react-select/dist/react-select.css',
+  'node_modules/rc-tooltip/assets/bootstrap.css'
 ];
 
 const javascriptFiles = [

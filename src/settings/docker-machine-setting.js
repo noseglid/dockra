@@ -41,6 +41,7 @@ export default class DockerMachineSetting extends React.Component {
 
   listMachines = () => {
     this.dockerMachine.ls()
+      .then(machines => machines.filter(m => m.state === 'Running'))
       .then(machines => this.setState({ machines: machines, machineChangePending: false }))
       .catch(err => {
         this.setState({

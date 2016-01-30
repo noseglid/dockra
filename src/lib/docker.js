@@ -62,6 +62,12 @@ const getEvents = () => getHandle()
   .then(handle => handle.getEventsAsync())
   .then(stream => new DockerEvents(stream));
 
+const info = () => getHandle()
+  .then(handle => handle.infoAsync());
+
+const version = () => getHandle()
+  .then(handle => handle.versionAsync());
+
 export default {
   createContainer: createContainer,
   getContainer: getContainer,
@@ -71,5 +77,7 @@ export default {
   pull: pull,
   exec: exec,
   searchImages: searchImages,
-  getEvents: getEvents
+  getEvents: getEvents,
+  info: info,
+  version: version
 };

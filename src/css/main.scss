@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'table';
 @import 'terminal';
+@import 'animations';
 
 @import 'bootstrap';
 @import 'font-awesome';
@@ -28,6 +29,11 @@ ul.nav {
   li {
     text-transform: capitalize;
   }
+
+  .no-link {
+    margin: 15px;
+    line-height: 20px;
+  }
 }
 
 .btn, a {
@@ -39,16 +45,9 @@ ul.nav {
   color: lighten($brand-primary, 10%);
 }
 
-@keyframes fade-in {
-  0% {
-      opacity: 0;
-  }
-  50% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
+.bounce-hover:hover {
+  animation: bounce 0.4s infinite ease-in-out;
+  color: lighten($brand-primary, 10%);
 }
 
 .fade-in {

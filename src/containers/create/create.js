@@ -71,7 +71,7 @@ export default class CreateContainer extends React.Component {
   render() {
     return (
       <div className="container">
-        <h1>Create container from <code>{this.state.container.Image}</code></h1>
+        <h1>Create container from <code>{format.hash(this.state.container.Image)}</code></h1>
         <form className="form-horizontal">
 
           <div className="form-group">

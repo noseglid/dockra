@@ -2,16 +2,19 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Tooltip from 'rc-tooltip';
 import { Router, Route, Link, IndexRedirect } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import humane from 'humane-js';
 
+import Info from './info';
 import Settings from './settings/settings';
 import Containers from './containers/containers';
 import CreateContainer from './containers/create/create';
 import ConsoleContainer from './containers/console/console';
 import LogsContainer from './containers/logs/logs';
 import Images from './images/images';
+import docker from './lib/docker';
 
 humane.error = humane.spawn({
   addnCls: 'humane-jackedup-error',
@@ -35,7 +38,36 @@ humane.success = humane.spawn({
 });
 
 
-const Main = React.createClass({
+class Main extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      info: {}
+    };
+  }
+
+  getInfo = () => {
+    docker.info()
+      .then(info => this.setState({ info: info }))
+      .catch(err => { /* Try again until it works. - Einstein */ })
+      .finally(() => this.infoTimer = setTimeout(this.getInfo, 450));
+  };
+
+  getVersion = () => {
+    docker.version()
+      .then(version => this.setState({ version: version }));
+  };
+
+  componentWillMount() {
+    this.getInfo();
+    this.getVersion();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.infoTimer);
+  }
+
   render() {
     const isActive = this.props.history.isActive;
     const links = [ 'containers', 'images' ];
@@ -57,6 +89,15 @@ const Main = React.createClass({
             </ul>
 
             <ul className="nav navbar-nav navbar-right">
+              <li>
+                <Tooltip
+                  placement="bottomRight"
+                  mouseLeaveDelay={0.5}
+                  align={{ offset: [ 42, 0 ] }}
+                  overlay={<Info data={this.state.info} version={this.state.version} />}>
+                  <i className="no-link fa fa-info fa-lg"></i>
+                </Tooltip>
+              </li>
               <li><Link to={'/settings'}><i className="fa fa-cog fa-lg fa-spin-hover"></i></Link></li>
             </ul>
           </div>
@@ -65,7 +106,7 @@ const Main = React.createClass({
       </div>
     );
   }
-});
+}
 
 ReactDOM.render((
     <IntlProvider locale="en">
