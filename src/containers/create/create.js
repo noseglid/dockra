@@ -3,7 +3,7 @@ import linkState from 'react-link-state';
 import update from 'react-addons-update';
 import format from '../../lib/format';
 import docker from '../../lib/docker';
-import humane from 'humane-js';
+import toastr from 'toastr';
 
 export default class CreateContainer extends React.Component {
   constructor(props) {
@@ -60,10 +60,10 @@ export default class CreateContainer extends React.Component {
       })
       .then(container => container.inspectAsync())
       .then(containerInfo => {
-        humane.success(`'${format.containerName(containerInfo.Name)}' successfully created${this.state.startOnCreated ? ' and started' : ''}.`);
+        toastr.success(`'${format.containerName(containerInfo.Name)}' successfully created${this.state.startOnCreated ? ' and started' : ''}.`);
       })
       .catch(err => {
-        humane.error(err.message);
+        toastr.error(err.message, 'Failed to create container.');
         console.error(err);
       });
   };
@@ -72,7 +72,7 @@ export default class CreateContainer extends React.Component {
     return (
       <div className="container">
         <h1>Create container from <code>{format.hash(this.state.container.Image)}</code></h1>
-        <form className="form-horizontal">
+        <form className="form-horizontal" onSubmit={(e) => e.preventDefault()}>
 
           <div className="form-group">
             <label htmlFor="input-name" className="col-sm-2 control-label">Name</label>

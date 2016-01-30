@@ -1,6 +1,6 @@
 import React from 'react';
 import linkState from 'react-link-state';
-import humane from 'humane-js';
+import toastr from 'toastr';
 import ListFilter from '../components/list-filter';
 import Image from './image';
 import PullControls from './pull-controls';
@@ -43,8 +43,8 @@ export default class Images extends React.Component {
       .then(images => images.sort((lhs, rhs) => lhs.Id.localeCompare(rhs.Id)))
       .then(images => this.setState({ images: images }))
       .catch(err => {
+        toastr.warning(err.message, 'Failed to list images');
         console.error(err);
-        humane.error(err.message);
       });
   };
 
@@ -55,7 +55,7 @@ export default class Images extends React.Component {
       dockerEvents.on('pull', () => this.getImages());
       dockerEvents.on('import', () => this.getImages());
     }).catch(err => {
-      humane.info(`Failed to subscribe to docker events due to: '${err.message}'.\nList may be outdated over time`);
+      toastr.warning(`List may be outdated over time. ${err.message}`, 'Failed to subscribe to events');
       console.error(err);
     });
   };
@@ -75,7 +75,7 @@ export default class Images extends React.Component {
       })
       .catch(err => {
         console.error(err);
-        humane.error(`Failed to pull ${t}: ${err.message}`);
+        toastr.error(err.message, `Failed to pull '${t}'`);
       })
       .finally(() => {
         this.getImages();
@@ -109,7 +109,7 @@ export default class Images extends React.Component {
         }
       })
       .catch(err => {
-        humane.error(`Failed to ${action}: ${err.message}`);
+        toastr.error(err.message, `Image action '${action}' failed`);
       });
   };
 

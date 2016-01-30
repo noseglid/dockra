@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import Tooltip from 'rc-tooltip';
 import { Router, Route, Link, IndexRedirect } from 'react-router';
 import { IntlProvider } from 'react-intl';
-import humane from 'humane-js';
+import toastr from 'toastr';
 
 import Info from './info';
 import Settings from './settings/settings';
@@ -16,27 +16,23 @@ import LogsContainer from './containers/logs/logs';
 import Images from './images/images';
 import docker from './lib/docker';
 
-humane.error = humane.spawn({
-  addnCls: 'humane-jackedup-error',
-  timeout: 10000,
-  timeoutAfterMove: 0,
-  clickToClose: true
-});
-
-humane.info = humane.spawn({
-  addnCls: 'humane-jackedup-info',
-  timeout: 5000,
-  timeoutAfterMove: 0,
-  clickToClose: true
-});
-
-humane.success = humane.spawn({
-  addnCls: 'humane-jackedup-success',
-  timeout: 5000,
-  timeoutAfterMove: 0,
-  clickToClose: true
-});
-
+toastr.options = {
+  'closeButton': false,
+  'debug': false,
+  'newestOnTop': true,
+  'progressBar': true,
+  'positionClass': 'toast-bottom-right',
+  'preventDuplicates': false,
+  'onclick': null,
+  'showDuration': 200,
+  'hideDuration': 200,
+  'timeOut': 5000,
+  'extendedTimeOut': 2000,
+  'showEasing': 'swing',
+  'hideEasing': 'linear',
+  'showMethod': 'slideDown',
+  'hideMethod': 'slideUp'
+};
 
 class Main extends React.Component {
 

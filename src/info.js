@@ -4,6 +4,9 @@ import moment from 'moment';
 
 class Info extends React.Component {
   render() {
+    if (!this.props.data || !this.props.version) {
+      return <div>No contact with docker server</div>;
+    }
     return (
       <div>
         <div>Server version: <code>{this.props.data.ServerVersion}</code></div>

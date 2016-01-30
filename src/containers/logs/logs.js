@@ -10,7 +10,7 @@ export default class ContainerLogs extends React.Component {
     super(props);
 
     this.state = {
-      containerName: this.props.params.id
+      containerName: format.hash(this.props.params.id)
     };
   }
 
@@ -58,7 +58,7 @@ export default class ContainerLogs extends React.Component {
 
     return (
       <div className="container-fluid" id="logs">
-        <h1>Logs</h1>
+        <h1>Logs from <code>{this.state.containerName}</code></h1>
         { terminalComponent }
       </div>
     );

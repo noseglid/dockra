@@ -2,7 +2,7 @@ import Promise from 'bluebird';
 import React from 'react';
 import { FormattedPlural } from 'react-intl';
 import linkState from 'react-link-state';
-import humane from 'humane-js';
+import toastr from 'toastr';
 import classNames from 'classnames';
 import ListFilter from '../components/list-filter';
 import Container from './container';
@@ -76,8 +76,8 @@ export default class Containers extends React.Component {
           .then(c => this.setState({ containers: c }));
       })
       .catch(err => {
+        toastr.warning(err.message, 'Failed to list containers');
         console.error(err);
-        humane.error(err.message);
       })
       .finally(() => {
         this.listContainersPromise = null;
@@ -91,7 +91,7 @@ export default class Containers extends React.Component {
       dockerEvents.on('die', () => this.getContainers());
       dockerEvents.on('destroy', () => this.getContainers());
     }).catch(err => {
-      humane.info(`Failed to subscribe to docker events due to: '${err.message}'.\nList may be outdated over time`);
+      toastr.warning(`List may be outdated over time. ${err.message}`, 'Failed to subscribe to events');
       console.error(err);
     });
   };
@@ -118,7 +118,7 @@ export default class Containers extends React.Component {
     })
     .catch(err => {
       console.error(err);
-      humane.error(`Failed to ${action} container: ${err.message}`);
+      toastr.error(err.message, `Container action '${action}' failed`);
     });
   };
 
