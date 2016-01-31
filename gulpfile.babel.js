@@ -50,7 +50,7 @@ gulp.task('css', () => {
     .pipe($.concat('main.css'))
     .pipe($.minifyCss())
     .pipe($.sourcemaps.write())
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('build/dev'));
 });
 
 gulp.task('javascript', () => {
@@ -60,22 +60,22 @@ gulp.task('javascript', () => {
     .pipe($.babel())
     .pipe($.uglify())
     .pipe($.sourcemaps.write())
-    .pipe(gulp.dest('./dist'));
+    .pipe(gulp.dest('build/dev'));
 });
 
 gulp.task('html', () => {
   return gulp.src(htmlFiles)
-    .pipe(gulp.dest('dist/'));
+    .pipe(gulp.dest('build/dev/'));
 });
 
 gulp.task('images', () => {
   return gulp.src(imageFiles)
-    .pipe(gulp.dest('dist/assets/images/'));
+    .pipe(gulp.dest('build/dev/assets/images/'));
 });
 
 gulp.task('fonts', () => {
   return gulp.src(fontFiles)
-    .pipe(gulp.dest('dist/assets/fonts/'));
+    .pipe(gulp.dest('build/dev/assets/fonts/'));
 });
 
 gulp.task('release:dependencies', [ 'release:package.json' ], () => {
@@ -133,7 +133,7 @@ gulp.task('release', [ 'release:copy', 'release:dependencies' ], (cb) => {
 gulp.task('build', [ 'css', 'javascript', 'html', 'images', 'fonts' ]);
 
 gulp.task('clean', () => {
-  return del([ 'dist/', 'build/' ]);
+  return del([ 'build/' ]);
 });
 
 gulp.task('watch', [ 'build' ], () => {
