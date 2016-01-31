@@ -1,10 +1,12 @@
 'use babel';
 
+import fs from 'fs';
 import gulp from 'gulp';
 import del from 'del';
-import fs from 'fs';
+import mkdirp from 'mkdirp';
 import { exec } from 'child_process';
 import gulpLoadPlugins from 'gulp-load-plugins';
+import packager from 'electron-packager';
 
 const $ = gulpLoadPlugins();
 
@@ -79,7 +81,7 @@ gulp.task('fonts', () => {
 gulp.task('release:dependencies', [ 'release:package.json' ], () => {
   return new Promise((resolve, reject) => {
     $.util.log('Will install dependencies. This may take a while...');
-    exec('npm install', { cwd: '.release' }, (err, stdout, stderr) => {
+    exec('npm install', { cwd: 'build/dist' }, (err, stdout, stderr) => {
       if (err) return reject(err);
       $.util.log('Dependencies successfully installed!');
       resolve();
@@ -88,11 +90,11 @@ gulp.task('release:dependencies', [ 'release:package.json' ], () => {
 });
 
 gulp.task('release:package.json', () => {
-  try { fs.mkdirSync('.release/'); } catch (e) { /* noop */ }
+  mkdirp.sync('build/dist');
 
   return new Promise((resolve, reject) => {
     const pkg = require('./package.json');
-    fs.writeFileSync('.release/package.json', JSON.stringify({
+    fs.writeFileSync('build/dist/package.json', JSON.stringify({
       name: pkg.name,
       version: pkg.version,
       dependencies: pkg.dependencies,
@@ -104,39 +106,34 @@ gulp.task('release:package.json', () => {
 
 gulp.task('release:copy', [ 'build' ], () => {
   gulp.src([ 'dist/**/*' ])
-    .pipe(gulp.dest('.release/'));
+    .pipe(gulp.dest('build/dist'));
 });
 
-gulp.task('release:osx', [ 'release:copy', 'release:dependencies' ], () => {
+gulp.task('release', [ 'release:copy', 'release:dependencies' ], (cb) => {
   const packageJson = require('./package.json');
-  return gulp.src('')
-    .pipe($.electron({
-      src: './.release',
-      packageJson: packageJson,
-      release: './release',
-      cache: './cache',
-      version: 'v0.35.5',
-      platforms: [ 'darwin-x64' ],
-      asar: true,
-      platformResources: {
-        darwin: {
-          CFBundleDisplayName: packageJson.name,
-          CFBundleIdentifier: packageJson.name,
-          CFBundleName: packageJson.name,
-          CFBundleVersion: packageJson.version,
-          icon: './resources/osx/icon.icns'
-        }
-      }
-    }))
-    .pipe(gulp.dest(''));
+
+  const opts = {
+    arch: 'x64',
+    dir: 'build/dist',
+    platform: 'darwin',
+    'app-bundle-id': packageJson.name,
+    'app-category-type': 'public.app-category.developer-tools',
+    'app-version': packageJson.version,
+    asar: true,
+    icon: './resources/osx/icon.icns',
+    name: packageJson.name,
+    out: 'build/release',
+    prune: true,
+    version: '0.36.7',
+    overwrite: true
+  };
+  packager(opts, cb);
 });
 
 gulp.task('build', [ 'css', 'javascript', 'html', 'images', 'fonts' ]);
 
-gulp.task('release', [ 'release:osx' ]);
-
 gulp.task('clean', () => {
-  return del([ 'dist/', 'release/', '.release/' ]);
+  return del([ 'dist/', 'build/' ]);
 });
 
 gulp.task('watch', [ 'build' ], () => {

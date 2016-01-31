@@ -1,7 +1,5 @@
-/cache
-/release
-/.release
 /node_modules
 /dist
+/build
 
 .DS_store
