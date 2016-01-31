@@ -7,7 +7,7 @@
     "node": ">=5.0.0"
   },
   "scripts": {
-    "start": "electron dist/main.js"
+    "start": "NODE_ENV=development electron dist/main.js"
   },
   "repository": {
     "type": "git",
