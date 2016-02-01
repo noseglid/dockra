@@ -105,7 +105,7 @@ gulp.task('release:package.json', () => {
 });
 
 gulp.task('release:copy', [ 'build' ], () => {
-  gulp.src([ 'dist/**/*' ])
+  gulp.src([ 'build/dev/**/*' ])
     .pipe(gulp.dest('build/dist'));
 });
 
