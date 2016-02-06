@@ -17,7 +17,7 @@ export default class Image extends React.Component {
               <ControlButton
                 disabled={ this.props.loading }
                 callback={ this.props.doAction.bind(null, 'create', this.props.id) }
-                icon="hdd"
+                icon="hdd-o"
               />
               <ControlButton
                 disabled={ this.props.loading }

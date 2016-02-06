@@ -50,12 +50,12 @@ export default class Container extends React.Component {
             <ControlButton
               disabled={ this.props.loading }
               callback={ this.props.doAction.bind(null, 'logs', this.props.Id) }
-              icon="align-left"
+              icon="file-text-o"
             />
             <ControlButton
               disabled={ this.props.loading || !this.props.State.Running }
               callback={ this.props.doAction.bind(null, 'console', this.props.Id) }
-              icon="console"
+              icon="terminal"
             />
             <ControlButton
               disabled={ this.props.loading || this.props.State.Running }

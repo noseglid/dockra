@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { delimiter } from 'path';
 import { DockerMachine } from 'nodedm';
 import config from '../config';
+import ControlButton from '../components/control-button';
 
 export default class DockerMachineSetting extends React.Component {
 
@@ -40,8 +41,8 @@ export default class DockerMachineSetting extends React.Component {
   };
 
   listMachines = () => {
+    this.setState({ machineChangePending: true });
     this.dockerMachine.ls()
-      .then(machines => machines.filter(m => m.state === 'Running'))
       .then(machines => this.setState({ machines: machines, machineChangePending: false }))
       .catch(err => {
         this.setState({
@@ -49,6 +50,14 @@ export default class DockerMachineSetting extends React.Component {
         });
         console.error(err);
       });
+  };
+
+  startMachine = (machineName) => {
+    const machine = this.state.machines.find(m => machineName === m.name);
+    machine.stateChanging = true;
+    machine.state = 'Booting...';
+    this.dockerMachine.start(machineName).then(() => this.listMachines());
+    this.forceUpdate();
   };
 
   machineChanged = (selected) => {
@@ -65,8 +74,23 @@ export default class DockerMachineSetting extends React.Component {
     });
   };
 
+  renderOption = (option) => {
+    const machine = this.state.machines.find(m => option.value === m.name);
+    const startButton = <ControlButton
+      icon={machine.stateChanging ? 'circle-o-notch' : 'play'}
+      callback={this.startMachine.bind(this, option.value)}
+      disabled={machine.stateChanging}
+      spin={machine.stateChanging}
+      />;
+    return <span>{ option.label } { option.disabled && startButton }</span>;
+  };
+
   render() {
-    const machineOptions = this.state.machines.map(m => ({ value: m.name, label: `${m.name} (${m.url})` }));
+    const machineOptions = this.state.machines.map(m => ({
+      value: m.name,
+      label: `${m.name} (${m.url || m.state})`,
+      disabled: m.state !== 'Running'
+    }));
     const activeMachine = this.state.machines.find(m => m.url === this.state.activeDockerUrl);
 
     return (
@@ -78,6 +102,7 @@ export default class DockerMachineSetting extends React.Component {
           onChange={this.machineChanged}
           isLoading={this.state.machineChangePending }
           clearable={false}
+          optionRenderer={this.renderOption}
           />
         <span className="help-text">The machine which is used to connect to docker.</span>
       </div>

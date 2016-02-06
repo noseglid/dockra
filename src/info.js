@@ -12,8 +12,8 @@ class Info extends React.Component {
         <div>Server version: <code>{this.props.data.ServerVersion}</code></div>
         <div>API version: <code>{this.props.version.ApiVersion}</code></div>
         <div>Kernel version: <code>{this.props.data.KernelVersion}</code></div>
-        <div>Architecture: <code>{this.props.version.Arch}</code></div>
-        <div>Operating system: <code>{this.props.version.Os}</code></div>
+        <div>Architecture: <code>{this.props.data.Architecture}</code></div>
+        <div>Operating system: <code>{this.props.data.OSType}</code></div>
         <div>Total memory: <code>{filesize(this.props.data.MemTotal)}</code></div>
         <div>Number of CPUs: <code>{this.props.data.NCPU}</code></div>
         <div>Server time: <code>{moment(this.props.data.SystemTime).format()}</code></div>
