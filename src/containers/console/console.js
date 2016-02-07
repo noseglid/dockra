@@ -1,4 +1,5 @@
 import React from 'react';
+import ContainerMenu from '../container-menu';
 import Terminal from '../../components/terminal';
 import docker from '../../lib/docker';
 import format from '../../lib/format';
@@ -48,8 +49,9 @@ export default class Console extends React.Component {
       <Terminal stream={this.state.stream} twoWay={true} onResize={this.handleResize} /> : null;
 
     return (
-      <div className="container-fluid" id="console">
-        <h1>Console to <code>{this.state.containerName}</code></h1>
+      <div className="container-sub container-fluid" id="console">
+        <ContainerMenu containerId={this.props.params.containerId} history={this.props.history} />
+        <h1><code>{this.state.containerName}</code></h1>
         { termComponent }
       </div>
     );

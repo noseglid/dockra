@@ -1,5 +1,5 @@
 import React from 'react';
-
+import ContainerMenu from '../container-menu';
 import docker from '../../lib/docker';
 import format from '../../lib/format';
 import Terminal from '../../components/terminal';
@@ -10,7 +10,7 @@ export default class ContainerLogs extends React.Component {
     super(props);
 
     this.state = {
-      containerName: format.hash(this.props.params.id)
+      containerName: format.hash(this.props.params.containerId)
     };
   }
 
@@ -22,7 +22,7 @@ export default class ContainerLogs extends React.Component {
       follow: 1
     };
 
-    docker.getContainer(this.props.params.id)
+    docker.getContainer(this.props.params.containerId)
       .then(container => Promise.all([ container.inspectAsync(), container.logsAsync(opts) ]))
       .spread((container, stream) => {
         let terminalStream = stream;
@@ -57,8 +57,9 @@ export default class ContainerLogs extends React.Component {
       <Terminal stream={this.state.terminalStream} ignoreStreamEnd={true} /> : null;
 
     return (
-      <div className="container-fluid" id="logs">
-        <h1>Logs from <code>{this.state.containerName}</code></h1>
+      <div className="container-sub container-fluid" id="logs">
+        <ContainerMenu containerId={this.props.params.containerId} history={this.props.history} />
+        <h1><code>{this.state.containerName}</code></h1>
         { terminalComponent }
       </div>
     );

@@ -113,7 +113,7 @@ ReactDOM.render((
           <Route path="containers" component={Containers} />
           <Route path="containers/create/:imageId" component={CreateContainer} />
           <Route path="containers/console/:containerId" component={ConsoleContainer} />
-          <Route path="containers/logs/:id" component={LogsContainer} />
+          <Route path="containers/logs/:containerId" component={LogsContainer} />
           <Route path="images" component={Images} />
         </Route>
       </Router>
