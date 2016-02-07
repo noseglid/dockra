@@ -12,7 +12,7 @@ class ControlButton extends React.Component {
     };
     return (
       <button type="button"
-              className="control-button btn btn-default btn-xs"
+              className="control-button btn btn-default"
               onClick={cb}
               disabled={this.props.disabled}>
         <span className={iconClass}></span>

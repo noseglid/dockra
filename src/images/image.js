@@ -12,22 +12,24 @@ export default class Image extends React.Component {
         <td>{filesize(this.props.virtualSize)}</td>
         <td title={this.props.id}>{this.props.id}</td>
         <td>
-          <div className="col-sm-6">
-            <div className="btn-group">
-              <ControlButton
-                disabled={ this.props.loading }
-                callback={ this.props.doAction.bind(null, 'create', this.props.id) }
-                icon="hdd-o"
-              />
-              <ControlButton
-                disabled={ this.props.loading }
-                callback={ this.props.doAction.bind(null, 'remove', this.props.id) }
-                icon="trash"
-              />
+          <div className="row">
+            <div className="col-sm-8">
+              <div className="btn-group">
+                <ControlButton
+                  disabled={ this.props.loading }
+                  callback={ this.props.doAction.bind(null, 'create', this.props.id) }
+                  icon="hdd-o"
+                />
+                <ControlButton
+                  disabled={ this.props.loading }
+                  callback={ this.props.doAction.bind(null, 'remove', this.props.id) }
+                  icon="trash"
+                />
+              </div>
             </div>
-          </div>
-          <div className="col-sm-6">
-            { this.props.loading ? <CubeGrid fadeIn /> : '' }
+            <div className="col-sm-4">
+              { this.props.loading ? <CubeGrid fadeIn /> : '' }
+            </div>
           </div>
         </td>
       </tr>

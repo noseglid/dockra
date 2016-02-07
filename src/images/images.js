@@ -110,6 +110,7 @@ export default class Images extends React.Component {
       })
       .catch(err => {
         toastr.error(err.message, `Image action '${action}' failed`);
+        this.getImages();
       });
   };
 
