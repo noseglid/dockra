@@ -1,12 +1,26 @@
-@import 'variables';
+/* bootstrap */
+$icon-font-path: './assets/fonts/';
+$font-family-sans-serif: "Lato", Helvetica, Arial, sans-serif;
+@import 'theme';
+@import 'bootstrap';
+
+/* font awesome */
+$fa-font-path: './assets/fonts/';
+@import 'font-awesome/scss/font-awesome';
+
+/* spinkit */
+$spinkit-size: 16px;
+$spinkit-spinner-color: $brand-primary;
+$spinkit-spinner-margin: 5px;
+@import 'spinkit/scss/spinners/9-cube-grid';
+@import 'spinkit/scss/spinners/11-folding-cube';
+
+@import 'fonts';
 @import 'table';
 @import 'terminal';
 @import 'animations';
-
-@import 'bootstrap';
-@import 'font-awesome';
-@import 'spinners/9-cube-grid';
-@import 'spinners/11-folding-cube';
+@import 'control-button';
+@import 'container';
 
 body {
   -webkit-user-select: none;
@@ -14,10 +28,6 @@ body {
 
 .navbar-brand {
   padding: 0 15px;
-}
-
-.glyphicon, .fa {
-  color: $brand-primary;
 }
 
 .navbar-header img {
@@ -52,6 +62,10 @@ ul.nav {
 
 .fade-in {
   animation: fade-in 1s;
+}
+
+.fade-in-quick {
+  animation: fade-in 0.3s;
 }
 
 nav li {

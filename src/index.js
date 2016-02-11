@@ -91,7 +91,7 @@ class Main extends React.Component {
                   mouseLeaveDelay={0.5}
                   align={{ offset: [ 42, 0 ] }}
                   overlay={<Info data={this.state.info} version={this.state.version} />}>
-                  <i className="no-link fa fa-info fa-lg"></i>
+                  <a href="#"><i className="fa fa-info fa-lg"></i></a>
                 </Tooltip>
               </li>
               <li><Link to={'/settings'}><i className="fa fa-cog fa-lg fa-spin-hover"></i></Link></li>

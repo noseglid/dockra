@@ -23,7 +23,7 @@ export default class Image extends React.Component {
                 <ControlButton
                   disabled={ this.props.loading }
                   callback={ this.props.doAction.bind(null, 'remove', this.props.id) }
-                  icon="trash"
+                  icon="minus-square"
                 />
               </div>
             </div>

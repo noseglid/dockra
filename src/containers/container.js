@@ -8,9 +8,13 @@ export default class Container extends React.Component {
   render() {
     const formattedName = format.containerName(this.props.Name);
     const rowClassNames = classNames({
-      success: this.props.State.Running,
-      warning: !this.props.State.Running,
       loading: this.props.loading
+    });
+    const stateClassNames = classNames('fa', {
+      'fa-check-circle-o': this.props.State.Running,
+      'text-success': this.props.State.Running,
+      'fa-times-circle-o': !this.props.State.Running,
+      'text-danger': !this.props.State.Running
     });
     return (
       <tr className={rowClassNames}>
@@ -61,6 +65,9 @@ export default class Container extends React.Component {
               icon="trash"
             />
           </div>
+        </td>
+        <td>
+          <i className={stateClassNames}></i>
         </td>
       </tr>
     );

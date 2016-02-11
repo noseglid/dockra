@@ -47,6 +47,7 @@
   "dependencies": {
     "bluebird": "^3.0.6",
     "bootstrap-sass": "^3.3.6",
+    "bootswatch": "^3.3.6",
     "classnames": "^2.2.1",
     "dockerode": "^2.2.7",
     "electron-packager": "^5.2.1",

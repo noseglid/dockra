@@ -11,7 +11,7 @@ import packager from 'electron-packager';
 const $ = gulpLoadPlugins();
 
 const cssFiles = [
-  'src/**/*.scss',
+  'src/css/main.scss',
   'node_modules/react-select/dist/react-select.css',
   'node_modules/rc-tooltip/assets/bootstrap.css',
   'node_modules/toastr/build/toastr.css'
@@ -32,7 +32,8 @@ const imageFiles = [
 
 const fontFiles = [
   'node_modules/bootstrap-sass/assets/fonts/bootstrap/*',
-  'node_modules/font-awesome/fonts/*'
+  'node_modules/font-awesome/fonts/*',
+  'src/assets/fonts/*'
 ];
 
 gulp.task('css', () => {
@@ -42,9 +43,7 @@ gulp.task('css', () => {
     .pipe($.sass({
       includePaths: [
         'node_modules/bootstrap-sass/assets/stylesheets/',
-        'node_modules/spinkit/scss/',
-        'node_modules/vex-js/sass/',
-        'node_modules/font-awesome/scss/'
+        'node_modules/'
       ]
     }).on('error', $.sass.logError))
     .pipe($.concat('main.css'))
@@ -138,6 +137,6 @@ gulp.task('clean', () => {
 
 gulp.task('watch', [ 'build' ], () => {
   gulp.watch(javascriptFiles, [ 'javascript' ]);
-  gulp.watch(cssFiles, [ 'css' ]);
+  gulp.watch('src/**/*.scss', [ 'css' ]);
   gulp.watch(htmlFiles, [ 'html' ]);
 });

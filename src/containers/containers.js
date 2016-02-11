@@ -166,7 +166,7 @@ export default class Containers extends React.Component {
       <div id="containers" className="container">
         <h1>Containers <small>{ filteredContainers.length } <FormattedPlural one="container" other="containers" value={filteredContainers.length} /></small></h1>
         <ListFilter freeText={linkState(this, 'nameFilter')} />
-        <table className="table filtered sortable fade-in">
+        <table className="table table-condensed table-hover filtered sortable fade-in-quick">
           <thead>
             <tr>
               {
@@ -179,6 +179,7 @@ export default class Containers extends React.Component {
                 })
               }
               <th>Control</th>
+              <th>{/* Up/Down status */}</th>
             </tr>
           </thead>
           <tbody>

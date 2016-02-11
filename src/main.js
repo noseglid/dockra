@@ -10,8 +10,8 @@ app.on('window-all-closed', () => {
 app.on('ready', () => {
   mainWindow = new BrowserWindow({
     title: 'Dockra',
-    width: 1600,
-    height: 1200
+    width: 1024,
+    height: 576
   });
 
   Menu.setApplicationMenu(buildMenu(app));

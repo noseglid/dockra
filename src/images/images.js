@@ -130,7 +130,7 @@ export default class Images extends React.Component {
 
         <h1>Images <small>{ filteredImages.length } <FormattedPlural one="image" other="images" value={filteredImages.length} /></small></h1>
         <ListFilter freeText={linkState(this, 'nameFilter')} />
-        <table className="table table-striped filtered fade-in">
+        <table className="table table-condensed table-striped filtered fade-in-quick">
           <thead>
             <tr>
               <th>Repository</th>

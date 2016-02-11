@@ -1,4 +1,4 @@
-@import 'bootstrap/variables';
+@import 'theme';
 
 #containers {
   .btn-group {
@@ -7,6 +7,18 @@
 
   .btn-group:not(:first-child) {
     margin-top: -1px;
+  }
+
+  .fa-check-circle-o,
+  .fa-times-circle-o {
+    font-size: 24px;
+
+    &.text-success {
+      color: $brand-success;
+    }
+    &.text-danger {
+      color: $brand-danger;
+    }
   }
 }
 
