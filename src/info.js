@@ -8,17 +8,46 @@ class Info extends React.Component {
       return <div>No contact with docker server</div>;
     }
     return (
-      <div>
-        <div>Server version: <code>{this.props.data.ServerVersion}</code></div>
-        <div>API version: <code>{this.props.version.ApiVersion}</code></div>
-        <div>Kernel version: <code>{this.props.data.KernelVersion}</code></div>
-        <div>Architecture: <code>{this.props.data.Architecture}</code></div>
-        <div>Operating system: <code>{this.props.data.OSType}</code></div>
-        <div>Total memory: <code>{filesize(this.props.data.MemTotal)}</code></div>
-        <div>Number of CPUs: <code>{this.props.data.NCPU}</code></div>
-        <div>Server time: <code>{moment(this.props.data.SystemTime).format()}</code></div>
-        <div>Index server: <code>{this.props.data.IndexServerAddress}</code></div>
-      </div>
+      <table className="table borderless table-condensed">
+        <tbody>
+          <tr>
+            <td>Server version:</td>
+            <td><code>{this.props.data.ServerVersion}</code></td>
+          </tr>
+          <tr>
+            <td>API version:</td>
+            <td><code>{this.props.version.ApiVersion}</code></td>
+          </tr>
+          <tr>
+            <td>Kernel version:</td>
+            <td><code>{this.props.data.KernelVersion}</code></td>
+          </tr>
+          <tr>
+            <td>Architecture:</td>
+            <td><code>{this.props.data.Architecture}</code></td>
+          </tr>
+          <tr>
+            <td>Operating system:</td>
+            <td><code>{this.props.data.OSType}</code></td>
+          </tr>
+          <tr>
+            <td>Total memory:</td>
+            <td><code>{filesize(this.props.data.MemTotal)}</code></td>
+          </tr>
+          <tr>
+            <td>Number of CPUs:</td>
+            <td><code>{this.props.data.NCPU}</code></td>
+          </tr>
+          <tr>
+            <td>Server time:</td>
+            <td><code>{moment(this.props.data.SystemTime).format()}</code></td>
+          </tr>
+          <tr>
+            <td>Index server:</td>
+            <td><code>{this.props.data.IndexServerAddress}</code></td>
+          </tr>
+        </tbody>
+      </table>
     );
   }
 }

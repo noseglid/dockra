@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Tooltip from 'rc-tooltip';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 import { Router, Route, Link, IndexRedirect } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import toastr from 'toastr';
@@ -86,13 +86,13 @@ class Main extends React.Component {
 
             <ul className="nav navbar-nav navbar-right">
               <li>
-                <Tooltip
-                  placement="bottomRight"
-                  mouseLeaveDelay={0.5}
-                  align={{ offset: [ 42, 0 ] }}
-                  overlay={<Info data={this.state.info} version={this.state.version} />}>
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={<Popover id="popover-info"><Info data={this.state.info} version={this.state.version} /></Popover>}
+                  delayHide={2000}
+                  rootClose={true}>
                   <a href="#"><i className="fa fa-info fa-lg"></i></a>
-                </Tooltip>
+                </OverlayTrigger>
               </li>
               <li><Link to={'/settings'}><i className="fa fa-cog fa-lg fa-spin-hover"></i></Link></li>
             </ul>

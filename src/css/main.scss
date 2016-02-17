@@ -68,6 +68,10 @@ ul.nav {
   animation: fade-in 0.3s;
 }
 
+.popover {
+  max-width: 400px;
+}
+
 nav li {
   transition: background-color 1s ease-in;
 }

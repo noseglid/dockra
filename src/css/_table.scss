@@ -16,6 +16,13 @@ table.filtered {
   }
 }
 
+table.borderless {
+  & > tbody > tr > td,
+  & > tbody > tr > th {
+    border: none !important;
+  }
+}
+
 table.sortable {
   th {
     &.sort {
