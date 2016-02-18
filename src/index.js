@@ -2,8 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Popover, OverlayTrigger } from 'react-bootstrap';
-import { Router, Route, Link, IndexRedirect } from 'react-router';
+import { Popover, OverlayTrigger, Navbar, Nav, NavItem } from 'react-bootstrap';
+import { Router, Route, IndexRedirect } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import toastr from 'toastr';
 
@@ -65,39 +65,42 @@ class Main extends React.Component {
   }
 
   render() {
-    const isActive = this.props.history.isActive;
+    const activeClass = (link) => this.props.history.isActive(`/${link}`) ? 'active' : 'inactive';
+    const goTo = (link) => () => this.props.history.push(link);
     const links = [ 'containers', 'images' ];
     return (
       <div>
-        <nav className="navbar navbar-default navbar-static-top">
-          <div className="container-fluid">
-            <div className="navbar-header">
-              <a className="navbar-brand">
-                <img alt="Docker" src="assets/images/docker.png" />
-              </a>
-            </div>
-            <ul className="nav navbar-nav navbar-left">
-              { links.map(link => (
-                <li key={link} className={ isActive(`/${link}`) ? 'active' : 'inactive' }>
-                  <Link to={`/${link}`}>{ link }</Link>
-                </li>
-              )) }
-            </ul>
-
-            <ul className="nav navbar-nav navbar-right">
-              <li>
-                <OverlayTrigger
-                  placement="bottom"
-                  overlay={<Popover id="popover-info"><Info data={this.state.info} version={this.state.version} /></Popover>}
-                  delayHide={2000}
-                  rootClose={true}>
-                  <a href="#"><i className="fa fa-info fa-lg"></i></a>
-                </OverlayTrigger>
-              </li>
-              <li><Link to={'/settings'}><i className="fa fa-cog fa-lg fa-spin-hover"></i></Link></li>
-            </ul>
-          </div>
-        </nav>
+        <Navbar staticTop fluid>
+          <Navbar.Header>
+            <Navbar.Brand>
+              Dockra
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav>
+                { links.map((link, key) => (
+                  <NavItem key={key} onClick={goTo(link)} className={ activeClass(`/${link}`) }>
+                    {link}
+                  </NavItem>
+                )) }
+            </Nav>
+            <Nav pullRight>
+              <NavItem>
+                  <OverlayTrigger
+                    placement="bottom"
+                    overlay={<Popover id="popover-info"><Info data={this.state.info} version={this.state.version} /></Popover>}
+                    delayHide={2000}
+                    rootClose={true}>
+                    <i className="fa fa-info fa-lg"></i>
+                  </OverlayTrigger>
+              </NavItem>
+              <NavItem eventKey="settings" onClick={goTo('settings')} className={ activeClass('settings') }>
+                <i className="fa fa-cog fa-lg fa-spin-hover"></i>
+              </NavItem>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
         { this.props.children }
       </div>
     );

@@ -26,28 +26,14 @@ body {
   -webkit-user-select: none;
 }
 
-.navbar-brand {
-  padding: 0 15px;
-}
-
-.navbar-header img {
-  width: 60px;
-  height: auto;
-}
-
 ul.nav {
   li {
     text-transform: capitalize;
   }
-
-  .no-link {
-    margin: 15px;
-    line-height: 20px;
-  }
 }
 
 .btn, a {
-  cursor: default;
+  cursor: default !important;
 }
 
 .fa-spin-hover:hover {
